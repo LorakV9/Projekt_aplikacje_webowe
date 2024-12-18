@@ -1,9 +1,11 @@
 const express = require('express');
-const mysql = require("mysql");
-const bodyParser = require('body-parser');
+const mysql = require('mysql');
+const cors = require('cors');
+const { readFile } = require('fs').promises;
 
 const app = express();
-app.use(bodyParser.json());
+app.use(express.json());
+app.use(cors());
 
 // Połączenie z bazą danych
 const db = mysql.createConnection({
@@ -15,8 +17,47 @@ const db = mysql.createConnection({
 
 db.connect((err) => {
   if (err) throw err;
-  console.log("MySql połączone");
+  console.log('MySql połączone');
 });
+
+// Endpoint do wyświetlania home.html (formularz logowania)
+app.get('/login', async (req, res) => {
+  try {
+    const html = await readFile('./home.html', 'utf8');
+    res.send(html);
+  } catch (err) {
+    console.error('Błąd przy wczytywaniu pliku HTML:', err);
+    res.status(500).send('Wystąpił błąd serwera.');
+  }
+});
+
+// Endpoint logowania użytkownika
+app.post('/login', (req, res) => {
+  const { email, haslo } = req.body;
+
+  if (!email || !haslo) {
+    return res.status(400).json({ message: 'Wprowadź email i hasło.' });
+  }
+
+  const query = 'SELECT * FROM urzytkownik WHERE email = ? AND haslo = ?';
+  db.query(query, [email, haslo], (err, results) => {
+    if (err) {
+      console.error('Błąd zapytania:', err);
+      return res.status(500).json({ message: 'Błąd serwera.' });
+    }
+
+    if (results.length > 0) {
+      const user = results[0];
+      res.json({ message: 'Logowanie udane.', user });
+    } else {
+      res.status(401).json({ message: 'Nieprawidłowy email lub hasło.' });
+    }
+  });
+});
+
+// Uruchomienie serwera
+app.listen(3001, () => console.log('Serwer działa na http://localhost:3001'));
+
 
 // 1. Endpointy wyświetlające każdą tabelę związaną z jedzeniem
 app.get('/burito', (req, res) => {
@@ -48,28 +89,7 @@ app.get('/lody', (req, res) => {
 });
 
 // 2. Logowanie użytkownika (sprawdzanie danych)
-app.post('/login', (req, res) => {
-    const { email, haslo } = req.body;
-  
-    if (!email || !haslo) {
-      return res.status(400).json({ message: 'Wprowadź email i hasło.' });
-    }
-  
-    const query = 'SELECT * FROM urzytkownik WHERE email = ? AND haslo = ?';
-    db.query(query, [email, haslo], (err, results) => {
-      if (err) {
-        console.error('Błąd zapytania:', err);
-        return res.status(500).json({ message: 'Błąd serwera.' });
-      }
-  
-      if (results.length > 0) {
-        const user = results[0];
-        res.json({ message: 'Logowanie udane.', user });
-      } else {
-        res.status(401).json({ message: 'Nieprawidłowy email lub hasło.' });
-      }
-    });
-  });
+
 
 // 3. Rejestracja użytkownika (dodawanie do tabeli urzytkownik)
 app.post('/register', (req, res) => {
