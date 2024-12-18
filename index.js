@@ -20,10 +20,21 @@ db.connect((err) => {
   console.log('MySql połączone');
 });
 
+app.get('/', async (req, res) => {
+  try {
+    const html = await readFile('./home.html', 'utf8');
+    res.send(html);
+  } catch (err) {
+    console.error('Błąd przy wczytywaniu pliku HTML:', err);
+    res.status(500).send('Wystąpił błąd serwera.');
+  }
+});
+
+
 // Endpoint do wyświetlania home.html (formularz logowania)
 app.get('/login', async (req, res) => {
   try {
-    const html = await readFile('./home.html', 'utf8');
+    const html = await readFile('./logo.html', 'utf8');
     res.send(html);
   } catch (err) {
     console.error('Błąd przy wczytywaniu pliku HTML:', err);
@@ -55,6 +66,27 @@ app.post('/login', (req, res) => {
   });
 });
 
+// 3. Rejestracja użytkownika (dodawanie do tabeli urzytkownik)
+app.post('/rejestracja', (req, res) => {
+  const { imie, nazwisko, email, haslo } = req.body;
+  const query = 'INSERT INTO urzytkownik (imie, nazwisko, email, haslo) VALUES (?, ?, ?, ?)';
+  db.query(query, [imie, nazwisko, email, haslo], (err, results) => {
+    if (err) throw err;
+    res.json({ message: 'Rejestracja zakończona sukcesem', userId: results.insertId });
+  });
+});
+
+
+// Endpoint do wyświetlania home.html (formularz logowania)
+app.get('/rejestracja', async (req, res) => {
+  try {
+    const html = await readFile('./rejestracja.html', 'utf8');
+    res.send(html);
+  } catch (err) {
+    console.error('Błąd przy wczytywaniu pliku HTML:', err);
+    res.status(500).send('Wystąpił błąd serwera.');
+  }
+});
 // Uruchomienie serwera
 app.listen(3001, () => console.log('Serwer działa na http://localhost:3001'));
 
@@ -91,15 +123,7 @@ app.get('/lody', (req, res) => {
 // 2. Logowanie użytkownika (sprawdzanie danych)
 
 
-// 3. Rejestracja użytkownika (dodawanie do tabeli urzytkownik)
-app.post('/register', (req, res) => {
-  const { imie, nazwisko, email, haslo } = req.body;
-  const query = 'INSERT INTO urzytkownik (imie, nazwisko, email, haslo) VALUES (?, ?, ?, ?)';
-  db.query(query, [imie, nazwisko, email, haslo], (err, results) => {
-    if (err) throw err;
-    res.json({ message: 'Rejestracja zakończona sukcesem', userId: results.insertId });
-  });
-});
+
 
 // 4. Dodawanie produktów do tabeli zamowienia
 app.post('/zamowienia/dodaj', (req, res) => {
