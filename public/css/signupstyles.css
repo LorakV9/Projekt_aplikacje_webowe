@@ -1,0 +1,109 @@
+/* Resetowanie marginesów i paddingu */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* T³o ca³ej strony */
+body {
+    background-color: #f4f4f4;
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    color: #333;
+}
+
+/* Kontener formularza rejestracji */
+.signup-container {
+    background-color: white;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    margin: 0 15px; /* Dodajemy margines, aby kontener nie dotyka³ krawêdzi ekranu */
+}
+
+    .signup-container h2 {
+        margin-bottom: 20px;
+        font-size: 28px;
+        color: #333;
+        font-weight: 600;
+    }
+
+/* Styl dla etykiet formularza */
+label {
+    font-size: 14px;
+    color: #555;
+    text-align: left;
+    margin-bottom: 5px;
+    display: block;
+}
+
+/* Styl dla pól input */
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+}
+
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="password"]:focus {
+        border-color: #2ecc71;
+        outline: none;
+    }
+
+/* Styl dla przycisku submit */
+button {
+    width: 100%;
+    padding: 12px;
+    background-color: #2ecc71;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+    button:hover {
+        background-color: #27ae60;
+    }
+
+/* Styl dla komunikatu o b³êdzie */
+#error-message,
+#success-message {
+    font-size: 14px;
+    margin-top: 15px;
+}
+
+#error-message {
+    color: red;
+}
+
+#success-message {
+    color: green;
+}
+
+/* Responsywnoœæ */
+@media (max-width: 600px) {
+    .signup-container {
+        padding: 30px;
+    }
+
+        .signup-container h2 {
+            font-size: 24px;
+        }
+}

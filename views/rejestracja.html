@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rejestracja</title>
+    <!-- Sprawdź, czy ścieżka do pliku CSS jest poprawna -->
+    <link rel="stylesheet" href="/css/signupstyles.css">
+</head>
+<body>
+    <div class="signup-container">
+        <h2>Rejestracja</h2>
+        <form id="register-form">
+            <label for="first-name">Imię:</label>
+            <input type="text" id="first-name" placeholder="Wprowadź imię" required><br>
+
+            <label for="last-name">Nazwisko:</label>
+            <input type="text" id="last-name" placeholder="Wprowadź nazwisko" required><br>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" placeholder="Wprowadź email" required><br>
+
+            <label for="password">Hasło:</label>
+            <input type="password" id="password" placeholder="Wprowadź hasło" required><br>
+
+            <button type="submit">Zarejestruj się</button>
+        </form>
+
+        <div id="error-message" style="color: red;"></div>
+        <div id="success-message" style="color: green;"></div>
+
+        <p>Masz już konto? <a href="/login">Zaloguj się</a></p>
+
+    </div>
+  
+
+  <script>
+    document.getElementById('register-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const firstName = document.getElementById('first-name').value;
+      const lastName = document.getElementById('last-name').value;
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      try {
+        const response = await fetch('http://localhost:3000/rejestracja', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ imie: firstName, nazwisko: lastName, email, haslo: password })
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          document.getElementById('success-message').innerText = result.message;
+          document.getElementById('error-message').innerText = ''; // Clear any previous error messages
+        } else {
+          document.getElementById('error-message').innerText = result.message;
+          document.getElementById('success-message').innerText = ''; // Clear any previous success messages
+        }
+      } catch (err) {
+        document.getElementById('error-message').innerText = 'Błąd serwera.';
+        document.getElementById('success-message').innerText = ''; // Clear any previous success messages
+        console.error(err);
+      }
+    });
+  </script>
+</body>
+</html>

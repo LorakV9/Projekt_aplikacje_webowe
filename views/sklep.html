@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sklep internetowy</title>
+    <link rel="stylesheet" href="/css/sklepstyles.css">
+</head>
+<body>
+
+    <!-- Nagłówek strony -->
+    <header>
+        <div class="logo">
+            <h1>Sklep internetowy</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#">Sklep</a></li>
+                <li><a href="#">Moje konto</a></li>
+                <li><a href="/" id="logout">Wyloguj</a></li> <!-- Dodane li do wylogowania -->
+                <li><a href="#" id="cart-button">Koszyk</a></li> <!-- Przycisk do otwierania koszyka -->
+
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Koszyk - panel wysuwany -->
+    <div id="cart-panel">
+        <button id="close-cart">X</button>
+        <h3>Twoj koszyk</h3>
+        <div id="cart-items">
+            <!-- Produkty będą wyświetlane dynamicznie -->
+        </div>
+        <button id="checkout-button">Przejdz do platnosci</button>
+    </div>
+
+
+    <!-- Sekcja główna sklepu -->
+    <main>
+        <div class="filters">
+            <!-- Filtry -->
+            <section class="filter-category">
+                <h3>Filtruj wg kategorii</h3>
+                <ul id="category-list">
+                    <!-- Kategorie będą ładowane dynamicznie tutaj -->
+                </ul>
+            </section>
+
+
+            <section class="filter-price">
+                <h3>Filtruj wg ceny</h3>
+                <label for="min-price">Min: </label>
+                <input type="number" id="min-price" min="0" placeholder="0 zl">
+                <br>
+                <label for="max-price">Max: </label>
+                <input type="number" id="max-price" min="0" placeholder="1000 zl">
+            </section>
+
+            <section class="filter-search">
+                <h3>Wyszukaj produkty</h3>
+                <input type="text" id="search" placeholder="Wyszukaj...">
+            </section>
+
+            <!-- Przycisk do zatwierdzenia filtrów -->
+            <button id="apply-filters">Filtruj</button>
+        </div>
+
+        <div id="product-list" class="product-list"></div>
+    </main>
+
+    <!-- Stopka strony -->
+    <footer>
+        <p>&copy; 2024 Sklep internetowy. Wszelkie prawa zastrzeżone.</p>
+    </footer>
+
+    <script>
+        // Zmienna do przechowywania produktów w koszyku
+        let cart = [];
+
+        // Funkcja do ładowania kategorii
+        async function loadCategories() {
+            try {
+                const response = await fetch('http://localhost:3000/api/categories');
+                if (!response.ok) {
+                    throw new Error('Błąd serwera przy ładowaniu kategorii');
+                }
+                const categories = await response.json();
+
+                const categoryList = document.getElementById('category-list');
+                categoryList.innerHTML = ''; // Wyczyść poprzednią zawartość
+
+                // Tworzymy checkboxy dla kategorii
+                categories.forEach(category => {
+                    const categoryItem = document.createElement('li');
+
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.id = `category-${category.id}`;
+                    checkbox.name = 'category';  // Możemy grupować checkboxy pod tym samym name
+                    checkbox.value = category.id;  // Przechowujemy ID kategorii jako wartość checkboxa
+
+                    const label = document.createElement('label');
+                    label.setAttribute('for', checkbox.id);  // Łączymy label z checkboxem
+                    label.textContent = category.name;  // Ustawiamy nazwę kategorii
+
+                    categoryItem.appendChild(checkbox);
+                    categoryItem.appendChild(label);
+
+                    categoryList.appendChild(categoryItem);
+                });
+            } catch (err) {
+                console.error('Błąd pobierania kategorii:', err);
+            }
+        }
+
+        // Funkcja do ładowania produktów
+        async function loadProducts(minPrice = 0, maxPrice = 1000, searchQuery = '', selectedCategories = []) {
+            try {
+                const response = await fetch('http://localhost:3000/api/products');
+                if (!response.ok) {
+                    throw new Error('Błąd serwera');
+                }
+                const products = await response.json();
+
+                const productList = document.getElementById('product-list');
+                productList.innerHTML = ''; // Wyczyść poprzednią zawartość
+
+                // Filtruj produkty po cenie, nazwie i kategoriach
+                const filteredProducts = products.filter(product => {
+                    const price = parseFloat(product.price);
+                    const name = product.name.toLowerCase();
+                    const query = searchQuery.toLowerCase();
+
+                    // Sprawdzanie, czy produkt należy do jednej z wybranych kategorii
+                    const isInCategory = selectedCategories.length === 0 || selectedCategories.includes(product.category);
+
+                    return price >= minPrice && price <= maxPrice && name.includes(query) && isInCategory;
+                });
+
+                // Przejdź przez produkty i dodaj je do HTML
+                filteredProducts.forEach(product => {
+                    const productDiv = document.createElement('div');
+                    productDiv.classList.add('product-item');
+
+                    const name = document.createElement('h3');
+                    name.textContent = product.name;
+
+                    const price = document.createElement('p');
+                    price.classList.add('price');
+                    price.textContent = `Cena: ${parseFloat(product.price).toFixed(2)} zl`;
+
+                    const addToCartButton = document.createElement('button');
+                    addToCartButton.classList.add('add-to-cart');
+                    addToCartButton.textContent = 'Dodaj do koszyka';
+
+                    // Dodajemy nasłuchiwacz na kliknięcie przycisku
+                    addToCartButton.addEventListener('click', () => {
+                        addToCart(product); // Dodaj produkt do koszyka po kliknięciu
+                    });
+
+                    productDiv.appendChild(name);
+                    productDiv.appendChild(price);
+                    productDiv.appendChild(addToCartButton);
+
+                    productList.appendChild(productDiv);
+                });
+            } catch (err) {
+                console.error('Błąd pobierania produktów:', err);
+                document.getElementById('product-list').innerText = 'Błąd podczas ładowania produktów.';
+            }
+        }
+
+        // Funkcja do dodawania produktu do koszyka
+        function addToCart(product) {
+            cart.push(product); // Dodaj produkt do koszyka
+
+            // Zaktualizuj widok koszyka
+            updateCart();
+        }
+
+        // Funkcja do aktualizacji widoku koszyka
+        // Funkcja do usuwania produktu z koszyka
+        function removeFromCart(productIndex) {
+            cart.splice(productIndex, 1); // Usuwamy produkt z tablicy koszyka na podstawie indeksu
+            updateCart(); // Zaktualizuj widok koszyka po usunięciu
+        }
+
+        // Funkcja do aktualizacji widoku koszyka
+        function updateCart() {
+            const cartItemsContainer = document.getElementById('cart-items');
+            cartItemsContainer.innerHTML = ''; // Wyczyść poprzednie elementy koszyka
+
+            // Przejdź przez wszystkie produkty w koszyku i dodaj je do widoku
+            cart.forEach((item, index) => {
+                const cartItemDiv = document.createElement('div');
+                cartItemDiv.classList.add('cart-item');
+
+                const itemName = document.createElement('p');
+                itemName.textContent = item.name;
+
+                const itemPrice = document.createElement('p');
+                itemPrice.textContent = `Cena: ${parseFloat(item.price).toFixed(2)} zl`;
+
+                // Przycisk do usuwania produktu z koszyka
+                const removeButton = document.createElement('button');
+                removeButton.classList.add('remove-from-cart');
+                removeButton.textContent = 'Usuń';
+                removeButton.addEventListener('click', () => {
+                    removeFromCart(index); // Usuń produkt po kliknięciu
+                });
+
+                cartItemDiv.appendChild(itemName);
+                cartItemDiv.appendChild(itemPrice);
+                cartItemDiv.appendChild(removeButton); // Dodaj przycisk "Usuń"
+
+                cartItemsContainer.appendChild(cartItemDiv);
+            });
+
+            // Możesz dodać sumę cen produktów w koszyku
+            const totalPrice = cart.reduce((total, item) => total + parseFloat(item.price), 0);
+            const totalPriceElement = document.createElement('p');
+            totalPriceElement.textContent = `Suma: ${totalPrice.toFixed(2)} zl`;
+            cartItemsContainer.appendChild(totalPriceElement);
+        }
+
+        // Funkcja do obsługi przycisku "Filtruj"
+        document.getElementById('apply-filters').addEventListener('click', () => {
+            const minPrice = parseFloat(document.getElementById('min-price').value) || 0;
+            const maxPrice = parseFloat(document.getElementById('max-price').value) || 1000;
+            const searchQuery = document.getElementById('search').value; // Pobierz zapytanie z pola wyszukiwania
+
+            // Pobierz zaznaczone kategorie
+            const selectedCategories = [];
+            const checkboxes = document.querySelectorAll('input[name="category"]:checked');
+            checkboxes.forEach(checkbox => {
+                selectedCategories.push(checkbox.value);  // Przechowuj ID zaznaczonych kategorii
+            });
+
+            // Ładuj tylko produkty, które mieszczą się w przedziale cenowym, pasują do wyszukiwanego tekstu i są w wybranych kategoriach
+            loadProducts(minPrice, maxPrice, searchQuery, selectedCategories);
+        });
+
+        // Funkcja do otwierania koszyka
+        document.getElementById('cart-button').addEventListener('click', () => {
+            const cartPanel = document.getElementById('cart-panel');
+            cartPanel.style.right = '0'; // Otwiera koszyk, zmieniając pozycję na 0 (widoczny)
+        });
+
+        // Funkcja do zamykania koszyka
+        document.getElementById('close-cart').addEventListener('click', () => {
+            const cartPanel = document.getElementById('cart-panel');
+            cartPanel.style.right = '-300px'; // Chowa koszyk, ustawiając jego pozycję poza ekran
+        });
+
+        // Ładowanie kategorii i produktów po załadowaniu strony
+        window.onload = () => {
+            loadCategories();  // Ładowanie kategorii
+            loadProducts();    // Ładowanie produktów
+        };
+    </script>
+
+
+</body>
+</html>
