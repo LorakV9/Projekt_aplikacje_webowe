@@ -24,6 +24,16 @@ db.connect((err) => {
     console.log('MySql połączone');
 });
 
+const session = require('express-session');
+
+app.use(session({
+    secret: 'your_secret_key', // Zmienna kluczowa dla szyfrowania
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false } // Użyj `true` dla HTTPS
+}));
+
+
 app.get('/', (req, res) => {
     res.redirect('/login'); // Przekierowanie na stronę logowania
 });
@@ -67,6 +77,10 @@ app.post('/login', (req, res) => {
 
         if (results.length > 0) {
             const user = results[0];
+
+            // Zapis ID użytkownika do sesji
+            req.session.userId = user.id;
+
             res.json({ message: 'Logowanie udane.', user });
         } else {
             res.status(401).json({ message: 'Nieprawidłowy email lub hasło.' });
@@ -74,15 +88,17 @@ app.post('/login', (req, res) => {
     });
 });
 
+
 // 3. Rejestracja użytkownika (dodawanie do tabeli urzytkownik)
 app.post('/rejestracja', (req, res) => {
     const { imie, nazwisko, email, haslo } = req.body;
-    const query = 'INSERT INTO urzytkownik (imie, nazwisko, email, haslo) VALUES (?, ?, ?, ?)';
+    const query = 'INSERT INTO urzytkownik (imie, nazwisko, email, haslo, rola) VALUES (?, ?, ?, ?, "user")';
     db.query(query, [imie, nazwisko, email, haslo], (err, results) => {
         if (err) throw err;
         res.json({ message: 'Rejestracja zakończona sukcesem', userId: results.insertId });
     });
 });
+
 
 // Endpoint do wyświetlania home.html (formularz logowania)
 app.get('/rejestracja', async (req, res) => {
@@ -108,91 +124,154 @@ app.get('/api/categories', (req, res) => {
 });
 
 app.get('/api/products', (req, res) => {
-    const query = 'SELECT name, price FROM products'; // Zapytanie SQL do pobrania nazw i cen produktów
+    const query = 'SELECT productid, name, price FROM products'; // Zapytanie SQL do pobrania nazw i cen produktów
     db.query(query, (err, results) => {
         if (err) {
             console.error('Błąd zapytania:', err);
             res.status(500).send('Błąd serwera');
         } else {
+            console.log('Produkty z bazy danych:', results); // Logowanie odpowiedzi z bazy danych
             res.json(results); // Zwróć produkty w formacie JSON
         }
     });
 });
 
+
+
+
 app.post('/api/add-to-cart', (req, res) => {
     const { productid, amount } = req.body;
+    const userId = req.session.userId;
 
-    // Zakładamy, że użytkownik jest zalogowany i mamy jego ID (np. z sesji)
-    const userId = 1;  // Zastąp tym ID zalogowanego użytkownika
+    if (!userId) {
+        return res.status(401).json({ message: 'Musisz być zalogowany, aby wykonać tę operację.' });
+    }
 
-    // Zapytanie SQL do dodania produktu do koszyka
-    const query = 'INSERT INTO koszyk (productid, amount, user_id) VALUES (?, ?, ?)';
+    console.log('Otrzymane dane do dodania do koszyka:', { productid, amount, userId }); // Logujemy dane
 
-    db.query(query, [productid, amount, userId], (err, result) => {
+    // Pobieramy nazwę i cenę produktu
+    const query = 'SELECT name, price FROM products WHERE productid = ?';
+
+    db.query(query, [productid], (err, results) => {
         if (err) {
-            console.error('Błąd dodawania do koszyka:', err);
+            console.error('Błąd zapytania:', err);
             return res.status(500).json({ error: 'Błąd serwera' });
         }
-        res.status(200).json({ message: 'Produkt dodany do koszyka' });
+
+        if (results.length === 0) {
+            return res.status(404).json({ message: 'Produkt nie znaleziony.' });
+        }
+
+        const { name, price } = results[0];
+        console.log('Znaleziony produkt:', { name, price });
+
+        // Dodajemy produkt do koszyka
+        const insertQuery = 'INSERT INTO koszyk (productid, name, price, amount, user_id) VALUES (?, ?, ?, ?, ?)';
+
+        db.query(insertQuery, [productid, name, price, amount, userId], (err, result) => {
+            if (err) {
+                console.error('Błąd dodawania do koszyka:', err);
+                return res.status(500).json({ error: 'Błąd serwera' });
+            }
+
+            console.log('Produkt dodany do koszyka:', result);
+            res.status(200).json({ message: 'Produkt dodany do koszyka' });
+        });
+    });
+});
+
+app.post('/api/remove-from-cart', (req, res) => {
+    const { productid } = req.body;
+    const userId = req.session.userId;
+
+    if (!userId) {
+        return res.status(401).json({ message: 'Musisz być zalogowany, aby wykonać tę operację.' });
+    }
+
+    // Zapytanie do usunięcia produktu z koszyka w bazie danych
+    const query = 'DELETE FROM koszyk WHERE productid = ? AND user_id = ?';
+
+    db.query(query, [productid, userId], (err, result) => {
+        if (err) {
+            console.error('Błąd usuwania z koszyka:', err);
+            return res.status(500).json({ error: 'Błąd serwera' });
+        }
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: 'Produkt nie znaleziony w koszyku.' });
+        }
+
+        res.status(200).json({ message: 'Produkt usunięty z koszyka.' });
     });
 });
 
 
+app.get('/api/cart', (req, res) => {
+    const userId = req.session.userId;
 
-// Uruchomienie serwera
-app.listen(3001, () => console.log('Serwer działa na http://localhost:3001'));
+    if (!userId) {
+        return res.status(401).json({ message: 'Musisz być zalogowany, aby wykonać tę operację.' });
+    }
 
+    const query = `
+        SELECT k.productid, p.name, p.price, k.amount 
+        FROM koszyk k
+        JOIN products p ON k.productid = p.productid
+        WHERE k.user_id = ?`;
 
-// 1. Endpointy wyświetlające każdą tabelę związaną z jedzeniem
-app.get('/burito', (req, res) => {
-    db.query('SELECT * FROM burito', (err, results) => {
-        if (err) throw err;
-        res.json(results);
+    db.query(query, [userId], (err, results) => {
+        if (err) {
+            console.error('Błąd pobierania koszyka:', err);
+            return res.status(500).json({ error: 'Błąd serwera' });
+        }
+        console.log('Produkty w koszyku:', results); // Logowanie do konsoli
+        res.status(200).json(results);
     });
 });
 
-app.get('/kebab', (req, res) => {
-    db.query('SELECT * FROM kebab', (err, results) => {
-        if (err) throw err;
-        res.json(results);
-    });
-});
+// app.get('/api/cart', (req, res) => {
+//     const userId = req.session.userId;
 
-app.get('/pizza', (req, res) => {
-    db.query('SELECT * FROM pizza', (err, results) => {
-        if (err) throw err;
-        res.json(results);
-    });
-});
+//     if (!userId) {
+//         return res.status(401).json({ message: 'Musisz być zalogowany, aby zobaczyć koszyk.' });
+//     }
 
-app.get('/lody', (req, res) => {
-    db.query('SELECT * FROM lody', (err, results) => {
-        if (err) throw err;
-        res.json(results);
-    });
-});
+//     const query = `
+//         SELECT p.name, p.price, k.amount
+//         FROM koszyk k
+//         JOIN products p ON k.productid = p.id
+//         WHERE k.user_id = ?;
+//     `;
 
-// 2. Logowanie użytkownika (sprawdzanie danych)
+//     db.query(query, [userId], (err, results) => {
+//         if (err) {
+//             console.error('Błąd pobierania koszyka:', err);
+//             return res.status(500).json({ message: 'Błąd serwera' });
+//         }
+
+//         res.json(results); // Zwraca produkty w koszyku w formacie JSON
+//     });
+// });
 
 
 
 
-// 4. Dodawanie produktów do tabeli zamowienia
-app.post('/zamowienia/dodaj', (req, res) => {
-    const { id, uzytkownik_id, nazwa, cena } = req.body;
-    const query = 'INSERT INTO zamowienia (id, uzytkownik_id, nazwa, cena) VALUES (?, ?, ?, ?)';
-    db.query(query, [id, uzytkownik_id, nazwa, cena], (err, results) => {
-        if (err) throw err;
-        res.json({ message: 'Produkt dodany do zamówienia', zamowienieId: results.insertId });
-    });
-});
+// // 4. Dodawanie produktów do tabeli zamowienia
+// app.post('/zamowienia/dodaj', (req, res) => {
+//     const { id, uzytkownik_id, nazwa, cena } = req.body;
+//     const query = 'INSERT INTO koszy (id, uzytkownik_id, nazwa, cena) VALUES (?, ?, ?, ?)';
+//     db.query(query, [id, uzytkownik_id, nazwa, cena], (err, results) => {
+//         if (err) throw err;
+//         res.json({ message: 'Produkt dodany do zamówienia', zamowienieId: results.insertId });
+//     });
+// });
 
 // 5. Dodanie wszystkich produktów użytkownika do tabeli zamowienie
 app.post('/zamowienie/przenies', (req, res) => {
     const { uzytkownik_id, opis, data } = req.body;
 
     // Pobierz wszystkie produkty użytkownika z tabeli zamowienia
-    const selectQuery = 'SELECT nazwa, cena FROM zamowienia WHERE uzytkownik_id = ?';
+    const selectQuery = 'SELECT nazwa, cena FROM koszyk WHERE user = ?';
     db.query(selectQuery, [uzytkownik_id], (err, results) => {
         if (err) throw err;
 
@@ -205,12 +284,12 @@ app.post('/zamowienie/przenies', (req, res) => {
         const sumaCen = results.reduce((sum, item) => sum + item.cena, 0);
 
         // Dodaj do tabeli zamowienie
-        const insertQuery = 'INSERT INTO zamowienie (uzytkownik_id, opis, cena, data) VALUES (?, ?, ?, ?)';
+        const insertQuery = 'INSERT INTO zamowienie (urzytkownik_id, opis, cena, data) VALUES (?, ?, ?, ?)';
         db.query(insertQuery, [uzytkownik_id, opis, sumaCen, data], (err, insertResults) => {
             if (err) throw err;
 
             // Usuń produkty z tabeli zamowienia
-            const deleteQuery = 'DELETE FROM zamowienia WHERE uzytkownik_id = ?';
+            const deleteQuery = 'DELETE FROM koszyk WHERE uzytkownik_id = ?';
             db.query(deleteQuery, [uzytkownik_id], (err) => {
                 if (err) throw err;
                 res.json({ message: 'Produkty przeniesione do zamowienie', zamowienieId: insertResults.insertId });
@@ -227,6 +306,10 @@ app.get('/zamowienie', (req, res) => {
         res.json(results);
     });
 });
+
+// Uruchomienie serwera
+app.listen(3001, () => console.log('Serwer działa na http://localhost:3001'));
+
 
 // Uruchomienie serwera
 app.listen(process.env.PORT || 3000, () => console.log(`App dostępne na http://localhost:3000`));
