@@ -60,6 +60,26 @@ app.get('/sklep', async (req, res) => {
     }
 });
 
+app.get('/admin', async (req, res) => {
+    try {
+        const html = await readFile('./views/admin.html', 'utf8');
+        res.send(html);
+    } catch (err) {
+        console.error('Błąd przy wczytywaniu pliku HTML:', err);
+        res.status(500).send('Wystąpił błąd serwera.');
+    }
+});
+
+app.get('/admin_panel', async (req, res) => {
+    try {
+        const html = await readFile('./views/admin_panel.html', 'utf8');
+        res.send(html);
+    } catch (err) {
+        console.error('Błąd przy wczytywaniu pliku HTML:', err);
+        res.status(500).send('Wystąpił błąd serwera.');
+    }
+});
+
 // Endpoint logowania użytkownika
 app.post('/login', (req, res) => {
     const { email, haslo } = req.body;
@@ -88,6 +108,122 @@ app.post('/login', (req, res) => {
     });
 });
 
+
+app.post('/admin', (req, res) => {
+    const { email, haslo } = req.body;
+
+    // Sprawdzanie, czy email i hasło są zgodne z wartościami admina
+    if (email === 'admin@add' && haslo === '123') {
+        // Zaloguj użytkownika
+        req.session.userId = 'admin'; // Przechowuj coś w sesji, np. id admina
+        req.session.role = 'admin';   // Przechowuj rolę admina
+
+        return res.json({ message: 'Logowanie udane.', user: { email, rola: 'admin' } });
+    } else {
+        return res.status(401).json({ message: 'Nieprawidłowy email lub hasło.' });
+    }
+});
+
+
+// Endpoint dodawania kategorii
+app.post('/add-category', (req, res) => {
+    const { name } = req.body;
+
+    if (!name) {
+        return res.status(400).json({ message: 'Nazwa kategorii jest wymagana.' });
+    }
+
+    const query = 'INSERT INTO categories (name) VALUES (?)';
+    db.query(query, [name], (err, results) => {
+        if (err) {
+            console.error('Błąd zapytania:', err);
+            return res.status(500).json({ message: 'Błąd serwera.' });
+        }
+        res.json({ message: 'Kategoria dodana pomyślnie!' });
+    });
+});
+
+// Endpoint dodawania produktu
+app.post('/add-product', (req, res) => {
+    const { name, price, categoryid } = req.body;
+
+    if (!name || !price || !categoryid) {
+        return res.status(400).json({ message: 'Wszystkie pola są wymagane.' });
+    }
+
+    const query = 'INSERT INTO products (name, price, categoryid) VALUES (?, ?, ?)';
+    db.query(query, [name, price, categoryid], (err, results) => {
+        if (err) {
+            console.error('Błąd zapytania:', err);
+            return res.status(500).json({ message: 'Błąd serwera.' });
+        }
+        res.json({ message: 'Produkt dodany pomyślnie!' });
+    });
+});
+
+// Endpoint do usuwania kategorii
+app.delete('/delete-category/:id', (req, res) => {
+    const categoryId = req.params.id;
+
+    // Sprawdzamy, czy kategoria istnieje
+    const query = 'DELETE FROM categories WHERE categoryid = ?';
+    db.query(query, [categoryId], (err, results) => {
+        if (err) {
+            console.error('Błąd zapytania:', err);
+            return res.status(500).json({ message: 'Błąd serwera.' });
+        }
+
+        if (results.affectedRows > 0) {
+            res.json({ message: 'Kategoria usunięta pomyślnie!' });
+        } else {
+            res.status(404).json({ message: 'Kategoria nie została znaleziona.' });
+        }
+    });
+});
+
+// Endpoint do usuwania produktu
+app.delete('/delete-product/:id', (req, res) => {
+    const productId = req.params.id;
+
+    // Sprawdzamy, czy produkt istnieje
+    const query = 'DELETE FROM products WHERE productid = ?';
+    db.query(query, [productId], (err, results) => {
+        if (err) {
+            console.error('Błąd zapytania:', err);
+            return res.status(500).json({ message: 'Błąd serwera.' });
+        }
+
+        if (results.affectedRows > 0) {
+            res.json({ message: 'Produkt usunięty pomyślnie!' });
+        } else {
+            res.status(404).json({ message: 'Produkt nie został znaleziony.' });
+        }
+    });
+});
+
+// Endpoint do pobierania kategorii
+app.get('/categories', (req, res) => {
+    const query = 'SELECT * FROM categories';
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Błąd zapytania:', err);
+            return res.status(500).json({ message: 'Błąd serwera.' });
+        }
+        res.json(results);
+    });
+});
+
+// Endpoint do pobierania produktów
+app.get('/products', (req, res) => {
+    const query = 'SELECT products.productid, products.name AS product_name, products.price, categories.name AS category_name FROM products JOIN categories ON products.categoryid = categories.categoryid';
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Błąd zapytania:', err);
+            return res.status(500).json({ message: 'Błąd serwera.' });
+        }
+        res.json(results);
+    });
+});
 
 // 3. Rejestracja użytkownika (dodawanie do tabeli urzytkownik)
 app.post('/rejestracja', (req, res) => {
@@ -229,49 +365,13 @@ app.get('/api/cart', (req, res) => {
     });
 });
 
-// app.get('/api/cart', (req, res) => {
-//     const userId = req.session.userId;
-
-//     if (!userId) {
-//         return res.status(401).json({ message: 'Musisz być zalogowany, aby zobaczyć koszyk.' });
-//     }
-
-//     const query = `
-//         SELECT p.name, p.price, k.amount
-//         FROM koszyk k
-//         JOIN products p ON k.productid = p.id
-//         WHERE k.user_id = ?;
-//     `;
-
-//     db.query(query, [userId], (err, results) => {
-//         if (err) {
-//             console.error('Błąd pobierania koszyka:', err);
-//             return res.status(500).json({ message: 'Błąd serwera' });
-//         }
-
-//         res.json(results); // Zwraca produkty w koszyku w formacie JSON
-//     });
-// });
-
-
-
-
-// // 4. Dodawanie produktów do tabeli zamowienia
-// app.post('/zamowienia/dodaj', (req, res) => {
-//     const { id, uzytkownik_id, nazwa, cena } = req.body;
-//     const query = 'INSERT INTO koszy (id, uzytkownik_id, nazwa, cena) VALUES (?, ?, ?, ?)';
-//     db.query(query, [id, uzytkownik_id, nazwa, cena], (err, results) => {
-//         if (err) throw err;
-//         res.json({ message: 'Produkt dodany do zamówienia', zamowienieId: results.insertId });
-//     });
-// });
 
 // 5. Dodanie wszystkich produktów użytkownika do tabeli zamowienie
 app.post('/zamowienie/przenies', (req, res) => {
     const { uzytkownik_id, opis, data } = req.body;
 
     // Pobierz wszystkie produkty użytkownika z tabeli zamowienia
-    const selectQuery = 'SELECT nazwa, cena FROM koszyk WHERE user = ?';
+    const selectQuery = 'SELECT name, price FROM koszyk WHERE user_id = ?';
     db.query(selectQuery, [uzytkownik_id], (err, results) => {
         if (err) throw err;
 
@@ -289,7 +389,7 @@ app.post('/zamowienie/przenies', (req, res) => {
             if (err) throw err;
 
             // Usuń produkty z tabeli zamowienia
-            const deleteQuery = 'DELETE FROM koszyk WHERE uzytkownik_id = ?';
+            const deleteQuery = 'DELETE FROM koszyk WHERE user_id = ?';
             db.query(deleteQuery, [uzytkownik_id], (err) => {
                 if (err) throw err;
                 res.json({ message: 'Produkty przeniesione do zamowienie', zamowienieId: insertResults.insertId });

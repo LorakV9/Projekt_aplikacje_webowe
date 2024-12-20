@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Administracyjny</title>
+</head>
+<body>
+    <h1>Panel Administracyjny</h1>
+
+    <!-- Formularz dodawania kategorii -->
+    <h2>Dodaj Kategorię</h2>
+    <form id="categoryForm">
+        <input type="text" id="categoryName" placeholder="Nazwa kategorii" required>
+        <button type="submit">Dodaj Kategorię</button>
+    </form>
+
+    <!-- Formularz dodawania produktu -->
+    <h2>Dodaj Produkt</h2>
+    <form id="productForm">
+        <input type="text" id="productName" placeholder="Nazwa produktu" required>
+        <input type="number" id="productPrice" placeholder="Cena" required>
+        <select id="productCategory" required>
+            <!-- Kategorie będą ładowane tutaj -->
+        </select>
+        <button type="submit">Dodaj Produkt</button>
+    </form>
+
+    <!-- Tabela kategorii -->
+    <h2>Lista Kategorii</h2>
+    <table id="categoryTable">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Nazwa Kategorii</th>
+                <th>Akcje</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Kategorie będą wyświetlane tutaj -->
+        </tbody>
+    </table>
+
+    <!-- Tabela produktów -->
+    <h2>Lista Produktów</h2>
+    <table id="productTable">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Nazwa Produktu</th>
+                <th>Cena</th>
+                <th>Kategoria</th>
+                <th>Akcje</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Produkty będą wyświetlane tutaj -->
+        </tbody>
+    </table>
+
+    <script>
+        // Dodawanie kategorii
+        document.getElementById('categoryForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const name = document.getElementById('categoryName').value;
+
+            fetch('/add-category', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                loadCategories(); // Ładuj kategorie po dodaniu
+            })
+            .catch(error => alert('Błąd: ' + error));
+        });
+
+        // Dodawanie produktu
+        document.getElementById('productForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const name = document.getElementById('productName').value;
+            const price = document.getElementById('productPrice').value;
+            const categoryid = document.getElementById('productCategory').value;
+
+            fetch('/add-product', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, price, categoryid })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                loadProducts(); // Ładuj produkty po dodaniu
+            })
+            .catch(error => alert('Błąd: ' + error));
+        });
+
+        // Ładowanie kategorii
+        function loadCategories() {
+            fetch('/categories')
+                .then(response => response.json())
+                .then(data => {
+                    const table = document.getElementById('categoryTable').getElementsByTagName('tbody')[0];
+                    table.innerHTML = '';
+                    data.forEach((category, index) => {
+                        const row = table.insertRow();
+                        row.insertCell(0).textContent = index + 1;
+                        row.insertCell(1).textContent = category.name;
+                        const deleteCell = row.insertCell(2);
+                        const deleteButton = document.createElement('button');
+                        deleteButton.textContent = 'Usuń';
+                        deleteButton.onclick = function() {
+                            deleteCategory(category.categoryid);
+                        };
+                        deleteCell.appendChild(deleteButton);
+                    });
+
+                    // Ładowanie kategorii do selecta
+                    const select = document.getElementById('productCategory');
+                    select.innerHTML = ''; // Czyścimy istniejące opcje
+                    data.forEach(category => {
+                        const option = document.createElement('option');
+                        option.value = category.categoryid;
+                        option.textContent = category.name;
+                        select.appendChild(option);
+                    });
+                });
+        }
+
+        // Ładowanie produktów
+        function loadProducts() {
+            fetch('/products')
+                .then(response => response.json())
+                .then(data => {
+                    const table = document.getElementById('productTable').getElementsByTagName('tbody')[0];
+                    table.innerHTML = '';
+                    data.forEach((product, index) => {
+                        const row = table.insertRow();
+                        row.insertCell(0).textContent = index + 1;
+                        row.insertCell(1).textContent = product.product_name;
+                        row.insertCell(2).textContent = product.price;
+                        row.insertCell(3).textContent = product.category_name;
+                        const deleteCell = row.insertCell(4);
+                        const deleteButton = document.createElement('button');
+                        deleteButton.textContent = 'Usuń';
+                        deleteButton.onclick = function() {
+                            deleteProduct(product.productid);
+                        };
+                        deleteCell.appendChild(deleteButton);
+                    });
+                });
+        }
+
+        // Usuwanie kategorii
+        function deleteCategory(categoryId) {
+            fetch(`/delete-category/${categoryId}`, {
+                method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                loadCategories(); // Ładuj kategorie po usunięciu
+            })
+            .catch(error => alert('Błąd: ' + error));
+        }
+
+        // Usuwanie produktu
+        function deleteProduct(productId) {
+            fetch(`/delete-product/${productId}`, {
+                method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                loadProducts(); // Ładuj produkty po usunięciu
+            })
+            .catch(error => alert('Błąd: ' + error));
+        }
+
+        // Ładowanie danych przy starcie strony
+        window.onload = function() {
+            loadCategories();
+            loadProducts();
+        }
+    </script>
+</body>
+</html>
