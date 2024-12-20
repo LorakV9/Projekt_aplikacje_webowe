@@ -58,6 +58,21 @@
         </tbody>
     </table>
 
+    <h2>Lista zamówień</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Opis</th>
+                <th>Cena</th>
+                <th>Zatwierdzenie</th>
+            </tr>
+        </thead>
+        <tbody id="order-list">
+            <!-- Lista zamówień -->
+        </tbody>
+    </table>
+
     <script>
         // Dodawanie kategorii
         document.getElementById('categoryForm').addEventListener('submit', function(event) {
@@ -179,12 +194,60 @@
             })
             .catch(error => alert('Błąd: ' + error));
         }
-
-        // Ładowanie danych przy starcie strony
-        window.onload = function() {
-            loadCategories();
-            loadProducts();
+        // Funkcja do załadowania zamówień
+// Funkcja do zatwierdzania zamówienia
+function approveOrder(orderId) {
+    fetch(`/zatwierdz/${orderId}`, {
+        method: 'POST'
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert(data.message);
+        
+        // Zmiana statusu przycisku na "Zatwierdzone" w tabeli bez przeładowania strony
+        const button = document.querySelector(`button[data-order-id="${orderId}"]`);
+        if (button) {
+            button.parentElement.innerHTML = 'Zatwierdzone';
         }
+    })
+    .catch(error => {
+        console.error('Błąd przy zatwierdzaniu zamówienia:', error);
+    });
+}
+
+// Funkcja do załadowania zamówień
+function loadOrders() {
+    fetch('/zamowienie') // Zakładając, że masz endpoint do pobierania zamówień
+        .then(response => response.json())
+        .then(orders => {
+            const orderList = document.getElementById('order-list');
+            orderList.innerHTML = ''; // Czyszczenie poprzednich wyników
+
+            orders.forEach(order => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${order.id}</td>
+                    <td>${order.opis}</td>
+                    <td>${order.cena}</td>
+                    <td>
+                        ${order.zatwierdzone === 1 ? 
+                            'Zatwierdzone' : 
+                            `<button data-order-id="${order.id}" onclick="approveOrder(${order.id})">Zatwierdź</button>`
+                        }
+                    </td>
+                `;
+                orderList.appendChild(row);
+            });
+        })
+        .catch(error => console.error('Błąd ładowania zamówień:', error));
+}
+// Załaduj zamówienia po załadowaniu strony
+window.onload = function() {
+    loadCategories();
+    loadProducts();
+    loadOrders();
+};
+
     </script>
 </body>
 </html>

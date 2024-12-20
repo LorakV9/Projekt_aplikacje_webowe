@@ -225,6 +225,37 @@ app.get('/products', (req, res) => {
     });
 });
 
+
+// Endpoint do zatwierdzania zamówienia
+app.post('/zatwierdz/:orderId', (req, res) => {
+    const orderId = req.params.orderId;
+
+    const query = 'UPDATE zamowienie SET zatwierdzone = 1 WHERE id = ?';
+    db.query(query, [orderId], (err, result) => {
+        if (err) {
+            console.error('Błąd zapytania do bazy:', err);
+            return res.status(500).json({ message: 'Błąd serwera.' });
+        }
+
+        if (result.affectedRows > 0) {
+            res.json({ message: 'Zamówienie zostało zatwierdzone.' });
+        } else {
+            res.status(404).json({ message: 'Nie znaleziono zamówienia o podanym ID.' });
+        }
+    });
+});
+
+app.get('/zamowienie', (req, res) => {
+    const query = 'SELECT * FROM zamowienie';
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Błąd zapytania do bazy:', err);
+            return res.status(500).json({ message: 'Błąd serwera.' });
+        }
+        res.json(results);
+    });
+});
+
 // 3. Rejestracja użytkownika (dodawanie do tabeli urzytkownik)
 app.post('/rejestracja', (req, res) => {
     const { imie, nazwisko, email, haslo } = req.body;
@@ -400,10 +431,13 @@ app.post('/zamowienie/przenies', (req, res) => {
 
 // 6. Wyświetlanie tabeli zamowienie
 app.get('/zamowienie', (req, res) => {
-    const query = 'SELECT id, uzytkownik_id, opis, cena, data FROM zamowienie';
+    const query = 'SELECT * FROM zamowienie';
     db.query(query, (err, results) => {
-        if (err) throw err;
-        res.json(results);
+        if (err) {
+            console.error('Błąd zapytania do bazy:', err);
+            return res.status(500).json({ message: 'Błąd serwera' });
+        }
+        res.json(results); // Zwróć wyniki w formacie JSON
     });
 });
 
