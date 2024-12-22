@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moje zamówienia</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid #ddd;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Moje zamówienia</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID Zamówienia</th>
+                <th>Opis</th>
+                <th>Łączna Cena</th>
+                <th>Data</th>
+                <th>Zatwierdzone</th>
+            </tr>
+        </thead>
+        <tbody id="orders">
+            <!-- Zamówienia zostaną załadowane dynamicznie -->
+        </tbody>
+    </table>
+
+    <script>
+        // Pobierz zamówienia użytkownika
+        fetch('/zamowienia')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Błąd przy pobieraniu zamówień');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const ordersTable = document.getElementById('orders');
+
+                if (data.length === 0) {
+                    ordersTable.innerHTML = '<tr><td colspan="5">Brak zamówień</td></tr>';
+                } else {
+                    data.forEach(order => {
+                        const row = document.createElement('tr');
+
+                        // Formatuj datę i godzinę
+                        const formattedDate = new Date(order.data);
+                        const dateWithTime = formattedDate.toLocaleString('pl-PL', {
+                            year: 'numeric',
+                            month: '2-digit',
+                            day: '2-digit',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            second: '2-digit'
+                        });
+
+                        // Zatwierdzenie
+                        const zatwierdzoneStatus = order.zatwierdzone === 1 ? 'Zatwierdzone' : 'Nie zatwierdzone';
+
+                        row.innerHTML = `
+                            <td>${order.id}</td>
+                            <td>${order.opis}</td>
+                            <td>${order.cena.toFixed(2)} zł</td>
+                            <td>${dateWithTime}</td>
+                            <td>${zatwierdzoneStatus}</td>
+                        `;
+                        ordersTable.appendChild(row);
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Błąd:', error);
+                const ordersTable = document.getElementById('orders');
+                ordersTable.innerHTML = '<tr><td colspan="5">Nie udało się załadować zamówień</td></tr>';
+            });
+    </script>
+</body>
+
+</html>

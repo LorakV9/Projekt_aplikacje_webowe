@@ -79,6 +79,16 @@ app.get('/admin_panel', async (req, res) => {
 	}
 })
 
+app.get('/historia', async (req, res) => {
+	try {
+		const html = await readFile('./views/historia.html', 'utf8')
+		res.send(html)
+	} catch (err) {
+		console.error('Błąd przy wczytywaniu pliku HTML:', err)
+		res.status(500).send('Wystąpił błąd serwera.')
+	}
+})
+
 // Endpoint logowania użytkownika
 app.post('/login', (req, res) => {
 	const { email, haslo } = req.body
@@ -479,16 +489,23 @@ app.post('/zamowienie/przenies', (req, res) => {
 })
 
 // 6. Wyświetlanie tabeli zamowienie
-// app.get('/zamowienie', (req, res) => {
-//     const query = 'SELECT * FROM zamowienie';
-//     db.query(query, (err, results) => {
-//         if (err) {
-//             console.error('Błąd zapytania do bazy:', err);
-//             return res.status(500).json({ message: 'Błąd serwera' });
-//         }
-//         res.json(results); // Zwróć wyniki w formacie JSON
-//     });
-// });
+app.get('/zamowienia', (req, res) => {
+	const uzytkownik_id = req.session.userId // Pobierz ID użytkownika z sesji
+
+	if (!uzytkownik_id) {
+		return res.status(401).json({ message: 'Nie jesteś zalogowany' }) // Sprawdź, czy użytkownik jest zalogowany
+	}
+
+	const query = 'SELECT * FROM zamowienie WHERE urzytkownik_id = ?'
+	db.query(query, [uzytkownik_id], (err, results) => {
+		if (err) {
+			console.error('Błąd zapytania do bazy:', err)
+			return res.status(500).json({ message: 'Błąd serwera' })
+		}
+
+		res.json(results) // Zwróć wyniki w formacie JSON
+	})
+})
 
 // Uruchomienie serwera
 app.listen(3001, () => console.log('Serwer działa na http://localhost:3001'))
