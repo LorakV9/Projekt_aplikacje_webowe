@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="pl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel Administracyjny</title>
 </head>
+
 <body>
     <h1>Panel Administracyjny</h1>
 
@@ -75,7 +77,7 @@
 
     <script>
         // Dodawanie kategorii
-        document.getElementById('categoryForm').addEventListener('submit', function(event) {
+        document.getElementById('categoryForm').addEventListener('submit', function (event) {
             event.preventDefault();
             const name = document.getElementById('categoryName').value;
 
@@ -84,16 +86,16 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ name })
             })
-            .then(response => response.json())
-            .then(data => {
-                alert(data.message);
-                loadCategories(); // Ładuj kategorie po dodaniu
-            })
-            .catch(error => alert('Błąd: ' + error));
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                    loadCategories(); // Ładuj kategorie po dodaniu
+                })
+                .catch(error => alert('Błąd: ' + error));
         });
 
         // Dodawanie produktu
-        document.getElementById('productForm').addEventListener('submit', function(event) {
+        document.getElementById('productForm').addEventListener('submit', function (event) {
             event.preventDefault();
 
             const name = document.getElementById('productName').value;
@@ -105,12 +107,12 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ name, price, categoryid })
             })
-            .then(response => response.json())
-            .then(data => {
-                alert(data.message);
-                loadProducts(); // Ładuj produkty po dodaniu
-            })
-            .catch(error => alert('Błąd: ' + error));
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                    loadProducts(); // Ładuj produkty po dodaniu
+                })
+                .catch(error => alert('Błąd: ' + error));
         });
 
         // Ładowanie kategorii
@@ -127,7 +129,7 @@
                         const deleteCell = row.insertCell(2);
                         const deleteButton = document.createElement('button');
                         deleteButton.textContent = 'Usuń';
-                        deleteButton.onclick = function() {
+                        deleteButton.onclick = function () {
                             deleteCategory(category.categoryid);
                         };
                         deleteCell.appendChild(deleteButton);
@@ -161,7 +163,7 @@
                         const deleteCell = row.insertCell(4);
                         const deleteButton = document.createElement('button');
                         deleteButton.textContent = 'Usuń';
-                        deleteButton.onclick = function() {
+                        deleteButton.onclick = function () {
                             deleteProduct(product.productid);
                         };
                         deleteCell.appendChild(deleteButton);
@@ -174,12 +176,12 @@
             fetch(`/delete-category/${categoryId}`, {
                 method: 'DELETE'
             })
-            .then(response => response.json())
-            .then(data => {
-                alert(data.message);
-                loadCategories(); // Ładuj kategorie po usunięciu
-            })
-            .catch(error => alert('Błąd: ' + error));
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                    loadCategories(); // Ładuj kategorie po usunięciu
+                })
+                .catch(error => alert('Błąd: ' + error));
         }
 
         // Usuwanie produktu
@@ -187,67 +189,68 @@
             fetch(`/delete-product/${productId}`, {
                 method: 'DELETE'
             })
-            .then(response => response.json())
-            .then(data => {
-                alert(data.message);
-                loadProducts(); // Ładuj produkty po usunięciu
-            })
-            .catch(error => alert('Błąd: ' + error));
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                    loadProducts(); // Ładuj produkty po usunięciu
+                })
+                .catch(error => alert('Błąd: ' + error));
         }
         // Funkcja do załadowania zamówień
-// Funkcja do zatwierdzania zamówienia
-function approveOrder(orderId) {
-    fetch(`/zatwierdz/${orderId}`, {
-        method: 'POST'
-    })
-    .then(response => response.json())
-    .then(data => {
-        alert(data.message);
-        
-        // Zmiana statusu przycisku na "Zatwierdzone" w tabeli bez przeładowania strony
-        const button = document.querySelector(`button[data-order-id="${orderId}"]`);
-        if (button) {
-            button.parentElement.innerHTML = 'Zatwierdzone';
+        // Funkcja do zatwierdzania zamówienia
+        function approveOrder(orderId) {
+            fetch(`/zatwierdz/${orderId}`, {
+                method: 'POST'
+            })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+
+                    // Aktualizacja statusu w tabeli bez przeładowania strony
+                    const button = document.querySelector(`button[data-order-id="${orderId}"]`);
+                    if (button) {
+                        button.parentElement.innerHTML = 'Zatwierdzone';
+                    }
+                })
+                .catch(error => {
+                    console.error('Błąd przy zatwierdzaniu zamówienia:', error);
+                });
         }
-    })
-    .catch(error => {
-        console.error('Błąd przy zatwierdzaniu zamówienia:', error);
-    });
-}
 
-// Funkcja do załadowania zamówień
-function loadOrders() {
-    fetch('/zamowienie') // Zakładając, że masz endpoint do pobierania zamówień
-        .then(response => response.json())
-        .then(orders => {
-            const orderList = document.getElementById('order-list');
-            orderList.innerHTML = ''; // Czyszczenie poprzednich wyników
+        // Funkcja do załadowania zamówień
+        function loadOrders() {
+            fetch('/zamowienie')
+                .then(response => response.json())
+                .then(orders => {
+                    const orderList = document.getElementById('order-list');
+                    orderList.innerHTML = ''; // Czyszczenie poprzednich wyników
 
-            orders.forEach(order => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
+                    orders.forEach(order => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
                     <td>${order.id}</td>
                     <td>${order.opis}</td>
-                    <td>${order.cena}</td>
+                    <td>${order.cena} zł</td>
                     <td>
-                        ${order.zatwierdzone === 1 ? 
-                            'Zatwierdzone' : 
-                            `<button data-order-id="${order.id}" onclick="approveOrder(${order.id})">Zatwierdź</button>`
-                        }
+                        ${order.zatwierdzone == 1 ?
+                                '<span>Zatwierdzone</span>' :
+                                `<button data-order-id="${order.id}" onclick="approveOrder(${order.id})">Zatwierdź</button>`
+                            }
                     </td>
                 `;
-                orderList.appendChild(row);
-            });
-        })
-        .catch(error => console.error('Błąd ładowania zamówień:', error));
-}
-// Załaduj zamówienia po załadowaniu strony
-window.onload = function() {
-    loadCategories();
-    loadProducts();
-    loadOrders();
-};
+                        orderList.appendChild(row);
+                    });
+                })
+                .catch(error => console.error('Błąd ładowania zamówień:', error));
+        }
+        // Załaduj zamówienia po załadowaniu strony
+        window.onload = function () {
+            loadCategories();
+            loadProducts();
+            loadOrders();
+        };
 
     </script>
 </body>
+
 </html>
