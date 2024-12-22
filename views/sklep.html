@@ -326,7 +326,30 @@
 
         // Wywołaj fetchCart na załadowanie strony lub po dodaniu produktu
         fetchCart();
+        document.getElementById('checkout-button').addEventListener('click', () => {
+            const userId = 1; // Identyfikator użytkownika (zmodyfikuj w zależności od logiki aplikacji)
+            const currentDate = new Date().toISOString().slice(0, 19).replace('T', ' '); // Format daty MySQL
 
+            fetch('/zamowienie/przenies', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    uzytkownik_id: userId,
+                    data: currentDate,
+                }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.message) {
+                        alert(data.message);
+                        // Opcjonalne: wyczyść koszyk w interfejsie
+                        document.getElementById('cart-items').innerHTML = '';
+                    }
+                })
+                .catch(error => console.error('Błąd:', error));
+        });
         // Funkcja do obsługi przycisku "Filtruj"
         document.getElementById('apply-filters').addEventListener('click', () => {
             const minPrice = parseFloat(document.getElementById('min-price').value) || 0;
@@ -360,6 +383,7 @@
         window.onload = () => {
             loadCategories();  // Ładowanie kategorii
             loadProducts();    // Ładowanie produktów
+
         };
     </script>
 

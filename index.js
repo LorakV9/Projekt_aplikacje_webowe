@@ -425,31 +425,54 @@ app.get('/api/cart', (req, res) => {
 
 // 5. Dodanie wszystkich produktów użytkownika do tabeli zamowienie
 app.post('/zamowienie/przenies', (req, res) => {
-	const { uzytkownik_id, opis, data } = req.body
+	const uzytkownik_id = req.session.userId // Użycie sesji do identyfikacji użytkownika
+	const { data } = req.body
 
-	// Pobierz wszystkie produkty użytkownika z tabeli zamowienia
-	const selectQuery = 'SELECT name, price FROM koszyk WHERE user_id = ?'
+	// Pobierz wszystkie produkty użytkownika z tabeli koszyk
+	const selectQuery = 'SELECT name, amount, price FROM koszyk WHERE user_id = ?'
 	db.query(selectQuery, [uzytkownik_id], (err, results) => {
-		if (err) throw err
+		if (err) {
+			console.error('Błąd podczas pobierania danych z koszyka:', err)
+			res.status(500).json({ message: 'Błąd serwera' })
+			return
+		}
 
 		if (results.length === 0) {
 			res.status(404).json({ message: 'Brak produktów do przeniesienia' })
 			return
 		}
 
-		// Oblicz sumaryczną cenę
-		const sumaCen = results.reduce((sum, item) => sum + item.cena, 0)
+		// Przygotuj opis i oblicz sumaryczną cenę
+		let opis = results.map(item => `${item.name} (Ilość: ${item.amount})`).join(', ')
+		let sumaCen = results.reduce((sum, item) => sum + parseFloat(item.price), 0) // Używamy samej ceny z tabeli koszyk
 
-		// Dodaj do tabeli zamowienie
+		// Debugowanie wyników
+		console.log('Produkty z koszyka:', results)
+		console.log('Łączna cena:', sumaCen)
+		console.log('Opis:', opis)
+
+		// Dodaj zamówienie do tabeli zamowienie
 		const insertQuery = 'INSERT INTO zamowienie (urzytkownik_id, opis, cena, data) VALUES (?, ?, ?, ?)'
 		db.query(insertQuery, [uzytkownik_id, opis, sumaCen, data], (err, insertResults) => {
-			if (err) throw err
+			if (err) {
+				console.error('Błąd podczas dodawania zamówienia:', err)
+				res.status(500).json({ message: 'Błąd serwera przy dodawaniu zamówienia' })
+				return
+			}
 
-			// Usuń produkty z tabeli zamowienia
+			// Usuń produkty z tabeli koszyk
 			const deleteQuery = 'DELETE FROM koszyk WHERE user_id = ?'
 			db.query(deleteQuery, [uzytkownik_id], err => {
-				if (err) throw err
-				res.json({ message: 'Produkty przeniesione do zamowienie', zamowienieId: insertResults.insertId })
+				if (err) {
+					console.error('Błąd podczas usuwania produktów z koszyka:', err)
+					res.status(500).json({ message: 'Błąd serwera przy usuwaniu koszyka' })
+					return
+				}
+
+				res.json({
+					message: 'Produkty przeniesione do zamowienie',
+					zamowienieId: insertResults.insertId,
+				})
 			})
 		})
 	})
