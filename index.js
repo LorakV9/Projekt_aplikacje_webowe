@@ -308,9 +308,6 @@ app.post('/api/add-to-cart', (req, res) => {
 		return res.status(401).json({ message: 'Musisz być zalogowany, aby wykonać tę operację.' })
 	}
 
-	console.log('Otrzymane dane do dodania do koszyka:', { productid, amount, userId }) // Logujemy dane
-
-	// Pobieramy nazwę i cenę produktu
 	const query = 'SELECT name, price FROM products WHERE productid = ?'
 
 	db.query(query, [productid], (err, results) => {
@@ -324,19 +321,37 @@ app.post('/api/add-to-cart', (req, res) => {
 		}
 
 		const { name, price } = results[0]
-		console.log('Znaleziony produkt:', { name, price })
 
-		// Dodajemy produkt do koszyka
-		const insertQuery = 'INSERT INTO koszyk (productid, name, price, amount, user_id) VALUES (?, ?, ?, ?, ?)'
-
-		db.query(insertQuery, [productid, name, price, amount, userId], (err, result) => {
+		// Sprawdzamy, czy produkt jest już w koszyku
+		const checkCartQuery = 'SELECT amount FROM koszyk WHERE productid = ? AND user_id = ?'
+		db.query(checkCartQuery, [productid, userId], (err, cartResults) => {
 			if (err) {
-				console.error('Błąd dodawania do koszyka:', err)
+				console.error('Błąd zapytania koszyka:', err)
 				return res.status(500).json({ error: 'Błąd serwera' })
 			}
 
-			console.log('Produkt dodany do koszyka:', result)
-			res.status(200).json({ message: 'Produkt dodany do koszyka' })
+			if (cartResults.length > 0) {
+				// Produkt już jest w koszyku, aktualizujemy ilość
+				const newAmount = cartResults[0].amount + amount
+				const updateQuery = 'UPDATE koszyk SET amount = ?, price = price + ? WHERE productid = ? AND user_id = ?'
+				db.query(updateQuery, [newAmount, price * amount, productid, userId], err => {
+					if (err) {
+						console.error('Błąd aktualizacji koszyka:', err)
+						return res.status(500).json({ error: 'Błąd serwera' })
+					}
+					res.status(200).json({ message: 'Produkt zaktualizowany w koszyku.' })
+				})
+			} else {
+				// Produkt nie jest w koszyku, dodajemy nowy wpis
+				const insertQuery = 'INSERT INTO koszyk (productid, name, price, amount, user_id) VALUES (?, ?, ?, ?, ?)'
+				db.query(insertQuery, [productid, name, price, amount, userId], err => {
+					if (err) {
+						console.error('Błąd dodawania do koszyka:', err)
+						return res.status(500).json({ error: 'Błąd serwera' })
+					}
+					res.status(200).json({ message: 'Produkt dodany do koszyka.' })
+				})
+			}
 		})
 	})
 })
@@ -349,20 +364,39 @@ app.post('/api/remove-from-cart', (req, res) => {
 		return res.status(401).json({ message: 'Musisz być zalogowany, aby wykonać tę operację.' })
 	}
 
-	// Zapytanie do usunięcia produktu z koszyka w bazie danych
-	const query = 'DELETE FROM koszyk WHERE productid = ? AND user_id = ?'
+	const checkQuery = 'SELECT amount FROM koszyk WHERE productid = ? AND user_id = ?'
 
-	db.query(query, [productid, userId], (err, result) => {
+	db.query(checkQuery, [productid, userId], (err, results) => {
 		if (err) {
-			console.error('Błąd usuwania z koszyka:', err)
+			console.error('Błąd zapytania:', err)
 			return res.status(500).json({ error: 'Błąd serwera' })
 		}
 
-		if (result.affectedRows === 0) {
+		if (results.length === 0) {
 			return res.status(404).json({ message: 'Produkt nie znaleziony w koszyku.' })
 		}
 
-		res.status(200).json({ message: 'Produkt usunięty z koszyka.' })
+		const currentAmount = results[0].amount
+
+		if (currentAmount > 1) {
+			const updateQuery = 'UPDATE koszyk SET amount = amount - 1 WHERE productid = ? AND user_id = ?'
+			db.query(updateQuery, [productid, userId], err => {
+				if (err) {
+					console.error('Błąd aktualizacji koszyka:', err)
+					return res.status(500).json({ error: 'Błąd serwera' })
+				}
+				res.status(200).json({ message: 'Ilość produktu zmniejszona.' })
+			})
+		} else {
+			const deleteQuery = 'DELETE FROM koszyk WHERE productid = ? AND user_id = ?'
+			db.query(deleteQuery, [productid, userId], err => {
+				if (err) {
+					console.error('Błąd usuwania z koszyka:', err)
+					return res.status(500).json({ error: 'Błąd serwera' })
+				}
+				res.status(200).json({ message: 'Produkt usunięty z koszyka.' })
+			})
+		}
 	})
 })
 
