@@ -34,8 +34,15 @@
         <div id="cart-items">
             <!-- Produkty będą wyświetlane dynamicznie -->
         </div>
+        <div id="promo-code-section">
+            <h4>Wprowadź kod promocyjny</h4>
+            <input type="text" id="promo-code" placeholder="Kod promocyjny">
+            <button id="apply-promo">Zastosuj kod</button>
+            <p id="promo-message" style="color: green;"></p> <!-- Wiadomość o statusie promocji -->
+        </div>
         <button id="checkout-button">Przejdz do platnosci</button>
     </div>
+
 
 
     <!-- Sekcja główna sklepu -->
@@ -381,6 +388,61 @@
             cartPanel.style.right = '-300px'; // Chowa koszyk, ustawiając jego pozycję poza ekran
         });
 
+
+        // Funkcja do zastosowania kodu promocyjnego
+        async function applyPromoCode() {
+            const promoCodeInput = document.getElementById('promo-code').value.toUpperCase(); // Pobieramy kod
+            const promoMessage = document.getElementById('promo-message'); // Miejsce na komunikaty
+
+            if (!promoCodeInput) {
+                promoMessage.textContent = 'Wprowadź kod promocyjny.';
+                promoMessage.style.color = 'red';
+                return;
+            }
+
+            // Zapytanie do backendu o sprawdzenie kodu
+            try {
+                const response = await fetch('/api/verify-promo-code', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ promoCode: promoCodeInput }),
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    const discount = data.discount; // Otrzymana zniżka
+                    const cartItems = document.querySelectorAll('.cart-item');
+
+                    if (cartItems.length === 0) {
+                        promoMessage.textContent = 'Koszyk jest pusty. Dodaj produkty, aby użyć kodu.';
+                        promoMessage.style.color = 'red';
+                        return;
+                    }
+
+                    // Obliczamy nową sumę z uwzględnieniem zniżki
+                    const totalPriceElement = document.querySelector('#cart-items p:last-child'); // Znajdź element z całkowitą sumą
+                    const totalPrice = parseFloat(totalPriceElement.textContent.replace('Suma: ', '').replace(' zł', '')); // Pobierz aktualną sumę
+                    const discountedPrice = totalPrice - (totalPrice * (discount / 100)); // Oblicz sumę po zniżce
+
+                    totalPriceElement.textContent = `Suma po zniżce: ${discountedPrice.toFixed(2)} zł`; // Zaktualizuj sumę
+                    promoMessage.textContent = `Kod promocyjny zastosowany! Zniżka: ${discount}%`;
+                    promoMessage.style.color = 'green';
+                } else {
+                    promoMessage.textContent = data.message || 'Nieprawidłowy kod promocyjny.';
+                    promoMessage.style.color = 'red';
+                }
+            } catch (err) {
+                promoMessage.textContent = 'Błąd serwera przy weryfikacji kodu.';
+                promoMessage.style.color = 'red';
+                console.error('Błąd:', err);
+            }
+        }
+
+        // Dodanie obsługi kliknięcia przycisku "Zastosuj"
+        document.getElementById('apply-promo').addEventListener('click', applyPromoCode);
         // Ładowanie kategorii i produktów po załadowaniu strony
         window.onload = () => {
             loadCategories();  // Ładowanie kategorii

@@ -445,53 +445,74 @@ app.get('/api/cart', (req, res) => {
 
 // 5. Dodanie wszystkich produktów użytkownika do tabeli zamowienie
 app.post('/zamowienie/przenies', (req, res) => {
-	const uzytkownik_id = req.session.userId // Użycie sesji do identyfikacji użytkownika
-	const { data } = req.body
+	const uzytkownik_id = req.session.userId // Pobranie ID użytkownika z sesji
+	const { data, promoCode } = req.body // Pobranie kodu promocyjnego z żądania
 
-	// Pobierz wszystkie produkty użytkownika z tabeli koszyk
-	const selectQuery = 'SELECT name, amount, price FROM koszyk WHERE user_id = ?'
-	db.query(selectQuery, [uzytkownik_id], (err, results) => {
+	// Pobierz kod promocyjny i zniżkę (jeśli istnieje)
+	const promoQuery = 'SELECT znizka FROM promocje WHERE kod = ?'
+
+	db.query(promoQuery, [promoCode], (err, promoResults) => {
 		if (err) {
-			console.error('Błąd podczas pobierania danych z koszyka:', err)
+			console.error('Błąd podczas pobierania kodu promocyjnego:', err)
 			res.status(500).json({ message: 'Błąd serwera' })
 			return
 		}
 
-		if (results.length === 0) {
-			res.status(404).json({ message: 'Brak produktów do przeniesienia' })
-			return
-		}
+		// Ustaw zniżkę na 0, jeśli kod promocyjny nie istnieje
+		const znizka = promoResults.length > 0 ? promoResults[0].znizka : 0
 
-		// Przygotuj opis i oblicz sumaryczną cenę
-		let opis = results.map(item => `${item.name} (Ilość: ${item.amount})`).join(', ')
-		let sumaCen = results.reduce((sum, item) => sum + parseFloat(item.price), 0) // Używamy samej ceny z tabeli koszyk
+		// Pobierz wszystkie produkty użytkownika z koszyka
+		const selectQuery = 'SELECT name, amount, price FROM koszyk WHERE user_id = ?'
 
-		// Debugowanie wyników
-		console.log('Produkty z koszyka:', results)
-		console.log('Łączna cena:', sumaCen)
-		console.log('Opis:', opis)
-
-		// Dodaj zamówienie do tabeli zamowienie
-		const insertQuery = 'INSERT INTO zamowienie (urzytkownik_id, opis, cena, data) VALUES (?, ?, ?, ?)'
-		db.query(insertQuery, [uzytkownik_id, opis, sumaCen, data], (err, insertResults) => {
+		db.query(selectQuery, [uzytkownik_id], (err, results) => {
 			if (err) {
-				console.error('Błąd podczas dodawania zamówienia:', err)
-				res.status(500).json({ message: 'Błąd serwera przy dodawaniu zamówienia' })
+				console.error('Błąd podczas pobierania danych z koszyka:', err)
+				res.status(500).json({ message: 'Błąd serwera' })
 				return
 			}
 
-			// Usuń produkty z tabeli koszyk
-			const deleteQuery = 'DELETE FROM koszyk WHERE user_id = ?'
-			db.query(deleteQuery, [uzytkownik_id], err => {
+			if (results.length === 0) {
+				res.status(404).json({ message: 'Brak produktów do przeniesienia' })
+				return
+			}
+
+			// Przygotowanie opisu i obliczenie sumarycznej ceny przed zniżką
+			const opis = results.map(item => `${item.name} (Ilość: ${item.amount})`).join(', ')
+			const sumaCen = results.reduce((sum, item) => sum + parseFloat(item.price), 0)
+
+			// Obliczanie ceny po zniżce
+			const sumaPoZnizce = sumaCen - sumaCen * (znizka / 100)
+
+			console.log('Produkty z koszyka:', results)
+			console.log('Łączna cena przed zniżką:', sumaCen)
+			console.log(' zniżką:', znizka)
+			console.log('Łączna cena po zniżce:', sumaPoZnizce)
+			console.log('Opis:', opis)
+
+			// Dodanie zamówienia do tabeli zamowienie
+			const insertQuery = 'INSERT INTO zamowienie (urzytkownik_id, opis, cena, data) VALUES (?, ?, ?, ?)'
+
+			db.query(insertQuery, [uzytkownik_id, opis, sumaPoZnizce, data], (err, insertResults) => {
 				if (err) {
-					console.error('Błąd podczas usuwania produktów z koszyka:', err)
-					res.status(500).json({ message: 'Błąd serwera przy usuwaniu koszyka' })
+					console.error('Błąd podczas dodawania zamówienia:', err)
+					res.status(500).json({ message: 'Błąd serwera przy dodawaniu zamówienia' })
 					return
 				}
 
-				res.json({
-					message: 'Produkty przeniesione do zamowienie',
-					zamowienieId: insertResults.insertId,
+				// Usunięcie produktów z koszyka
+				const deleteQuery = 'DELETE FROM koszyk WHERE user_id = ?'
+
+				db.query(deleteQuery, [uzytkownik_id], err => {
+					if (err) {
+						console.error('Błąd podczas usuwania produktów z koszyka:', err)
+						res.status(500).json({ message: 'Błąd serwera przy usuwaniu koszyka' })
+						return
+					}
+
+					res.json({
+						message: 'Produkty przeniesione do zamowienie z uwzględnieniem zniżki',
+						zamowienieId: insertResults.insertId,
+					})
 				})
 			})
 		})
@@ -533,6 +554,75 @@ app.post('/konto', (req, res) => {
 		}
 
 		res.json({ message: 'Dane użytkownika zostały zaktualizowane' })
+	})
+})
+
+app.post('/promocje/dodaj', (req, res) => {
+	const { kod, znizka } = req.body
+
+	if (!kod || !znizka || isNaN(znizka) || znizka <= 0 || znizka > 100) {
+		return res.status(400).json({ message: 'Nieprawidłowe dane. Kod i zniżka (1-100%) są wymagane.' })
+	}
+
+	const query = 'INSERT INTO promocje (kod, znizka) VALUES (?, ?)'
+	db.query(query, [kod, znizka], (err, results) => {
+		if (err) {
+			console.error('Błąd podczas dodawania promocji:', err)
+			if (err.code === 'ER_DUP_ENTRY') {
+				return res.status(400).json({ message: 'Ten kod już istnieje.' })
+			}
+			return res.status(500).json({ message: 'Błąd serwera.' })
+		}
+
+		// Dodano poprawnie - zwróć kod 200 i komunikat
+		res.status(200).json({ message: 'Promocja została dodana pomyślnie.', promocjaId: results.insertId })
+	})
+})
+
+app.delete('/promocje/:id', (req, res) => {
+	const { id } = req.params
+	const query = 'DELETE FROM promocje WHERE id = ?'
+
+	db.query(query, [id], (err, results) => {
+		if (err) {
+			console.error('Błąd podczas usuwania promocji:', err)
+			return res.status(500).json({ message: 'Błąd serwera' })
+		}
+
+		if (results.affectedRows === 0) {
+			return res.status(404).json({ message: 'Promocja nie znaleziona' })
+		}
+
+		res.status(200).json({ message: 'Promocja została usunięta' })
+	})
+})
+
+app.get('/promocje', (req, res) => {
+	const query = 'SELECT * FROM promocje ORDER BY id DESC' // Sortowanie malejąco według id
+	db.query(query, (err, results) => {
+		if (err) {
+			console.error('Błąd podczas pobierania promocji:', err)
+			return res.status(500).json({ message: 'Błąd serwera' })
+		}
+		res.json(results) // Zwróć wyniki w formacie JSON
+	})
+})
+
+app.post('/api/verify-promo-code', (req, res) => {
+	const { promoCode } = req.body
+
+	// Zapytanie do bazy danych w celu sprawdzenia kodu
+	db.query('SELECT * FROM promocje WHERE kod = ?', [promoCode], (err, results) => {
+		if (err) {
+			return res.status(500).json({ message: 'Błąd serwera' })
+		}
+
+		if (results.length === 0) {
+			return res.status(404).json({ message: 'Nieprawidłowy kod promocyjny' })
+		}
+
+		const promo = results[0]
+		return res.status(200).json({ discount: promo.znizka }) // Zwracamy wartość zniżki
 	})
 })
 

@@ -28,6 +28,17 @@
         <button type="submit">Dodaj Produkt</button>
     </form>
 
+
+    <h2>Dodaj Nową Promocję</h2>
+    <form id="promocja-form">
+        <label for="kod">Kod Promocji:</label>
+        <input type="text" id="kod" name="kod" required placeholder="Np. PROMO2024"><br><br>
+
+        <label for="znizka">Procent Zniżki:</label>
+        <input type="number" id="znizka" name="znizka" min="1" max="100" required placeholder="Np. 20"><br><br>
+
+        <button type="submit">Dodaj Promocję</button>
+    </form>
     <!-- Tabela kategorii -->
     <h2>Lista Kategorii</h2>
     <table id="categoryTable">
@@ -72,6 +83,23 @@
         </thead>
         <tbody id="order-list">
             <!-- Lista zamówień -->
+        </tbody>
+    </table>
+
+    <div id="response-message" style="margin-top: 20px; color: green;"></div>
+
+    <h1>Promocje</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Kod Promocyjny</th>
+                <th>Zniżka (%)</th>
+                <th>Akcje</th>
+            </tr>
+        </thead>
+        <tbody id="promocje-tabela">
+            <!-- Wiersze będą generowane dynamicznie -->
         </tbody>
     </table>
 
@@ -196,6 +224,8 @@
                 })
                 .catch(error => alert('Błąd: ' + error));
         }
+
+
         // Funkcja do załadowania zamówień
         // Funkcja do zatwierdzania zamówienia
         function approveOrder(orderId) {
@@ -243,8 +273,83 @@
                 })
                 .catch(error => console.error('Błąd ładowania zamówień:', error));
         }
+
+
+        document.getElementById('promocja-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const kod = document.getElementById('kod').value.trim();
+            const znizka = document.getElementById('znizka').value.trim();
+
+            try {
+                const response = await fetch('/promocje/dodaj', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ kod, znizka })
+                });
+
+                const result = await response.json();
+                const messageDiv = document.getElementById('response-message');
+
+                if (response.ok) { // Jeśli status jest 200-299
+                    messageDiv.style.color = 'green';
+                    messageDiv.textContent = result.message;
+                    document.getElementById('promocja-form').reset(); // Wyczyść formularz
+                } else { // Jeśli status jest inny niż 200-299
+                    messageDiv.style.color = 'red';
+                    messageDiv.textContent = result.message || 'Wystąpił błąd.';
+                }
+            } catch (error) {
+                console.error('Błąd podczas dodawania promocji:', error);
+                alert('Wystąpił błąd podczas dodawania promocji. Spróbuj ponownie później.');
+            }
+        });
+
+        async function fetchPromocje() {
+            try {
+                const response = await fetch('/promocje'); // Pobierz dane z endpointa
+                const promocje = await response.json();
+
+                const tabela = document.getElementById('promocje-tabela');
+                tabela.innerHTML = ''; // Wyczyść zawartość tabeli
+
+                promocje.forEach(promocja => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                <td>${promocja.id}</td>
+                <td>${promocja.kod}</td>
+                <td>${promocja.znizka}%</td>
+                <td><button onclick="usunPromocje(${promocja.id})">Usuń</button></td>
+            `;
+                    tabela.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Błąd podczas pobierania promocji:', error);
+            }
+        }
+
+        async function usunPromocje(id) {
+            try {
+                const response = await fetch(`/promocje/${id}`, {
+                    method: 'DELETE',
+                });
+
+                if (response.ok) {
+                    alert('Promocja została usunięta!');
+                    fetchPromocje(); // Odśwież tabelę po usunięciu
+                } else {
+                    alert('Błąd podczas usuwania promocji');
+                }
+            } catch (error) {
+                console.error('Błąd podczas usuwania promocji:', error);
+            }
+        }
+
         // Załaduj zamówienia po załadowaniu strony
         window.onload = function () {
+            fetchPromocje();
             loadCategories();
             loadProducts();
             loadOrders();
