@@ -496,7 +496,7 @@ app.get('/zamowienia', (req, res) => {
 		return res.status(401).json({ message: 'Nie jesteś zalogowany' }) // Sprawdź, czy użytkownik jest zalogowany
 	}
 
-	const query = 'SELECT * FROM zamowienie WHERE urzytkownik_id = ?'
+	const query = 'SELECT * FROM zamowienie WHERE urzytkownik_id = ? ORDER BY id DESC'
 	db.query(query, [uzytkownik_id], (err, results) => {
 		if (err) {
 			console.error('Błąd zapytania do bazy:', err)
