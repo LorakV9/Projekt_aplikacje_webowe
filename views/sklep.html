@@ -338,6 +338,7 @@
         document.getElementById('checkout-button').addEventListener('click', () => {
             const userId = 1; // Identyfikator użytkownika (zmodyfikuj w zależności od logiki aplikacji)
             const currentDate = new Date().toISOString().slice(0, 19).replace('T', ' '); // Format daty MySQL
+            const promoCodeInput = document.getElementById('promo-code').value.toUpperCase(); // Pobieramy kod
 
             fetch('/zamowienie/przenies', {
                 method: 'POST',
@@ -347,6 +348,7 @@
                 body: JSON.stringify({
                     uzytkownik_id: userId,
                     data: currentDate,
+                    promoCode: promoCodeInput
                 }),
             })
                 .then(response => response.json())
