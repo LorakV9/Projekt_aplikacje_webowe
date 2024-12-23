@@ -69,6 +69,16 @@ app.get('/admin', async (req, res) => {
 	}
 })
 
+app.get('/konto', async (req, res) => {
+	try {
+		const html = await readFile('./views/konto.html', 'utf8')
+		res.send(html)
+	} catch (err) {
+		console.error('Błąd przy wczytywaniu pliku HTML:', err)
+		res.status(500).send('Wystąpił błąd serwera.')
+	}
+})
+
 app.get('/admin_panel', async (req, res) => {
 	try {
 		const html = await readFile('./views/admin_panel.html', 'utf8')
@@ -504,6 +514,25 @@ app.get('/zamowienia', (req, res) => {
 		}
 
 		res.json(results) // Zwróć wyniki w formacie JSON
+	})
+})
+
+app.post('/konto', (req, res) => {
+	const uzytkownik_id = req.session.userId // Pobierz ID użytkownika z sesji
+	const { imie, nazwisko, email, haslo } = req.body // Dane do aktualizacji
+
+	if (!uzytkownik_id) {
+		return res.status(401).json({ message: 'Nie jesteś zalogowany' }) // Użytkownik nie jest zalogowany
+	}
+
+	const query = 'UPDATE urzytkownik SET imie = ?, nazwisko = ?, email = ?, haslo = ? WHERE id = ?'
+	db.query(query, [imie, nazwisko, email, haslo, uzytkownik_id], (err, results) => {
+		if (err) {
+			console.error('Błąd podczas aktualizacji danych:', err)
+			return res.status(500).json({ message: 'Błąd serwera' })
+		}
+
+		res.json({ message: 'Dane użytkownika zostały zaktualizowane' })
 	})
 })
 

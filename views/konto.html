@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zmiana danych użytkownika</title>
+</head>
+
+<body>
+    <h2>Zmiana danych użytkownika</h2>
+    <form id="update-form">
+        <label for="imie">Imię:</label>
+        <input type="text" id="imie" name="imie" required><br><br>
+
+        <label for="nazwisko">Nazwisko:</label>
+        <input type="text" id="nazwisko" name="nazwisko"><br><br>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required><br><br>
+
+        <label for="haslo">Hasło:</label>
+        <input type="password" id="haslo" name="haslo" required><br><br>
+
+        <button type="submit">Zapisz zmiany</button>
+    </form>
+
+    <script>
+        document.getElementById('update-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const formData = {
+                imie: document.getElementById('imie').value,
+                nazwisko: document.getElementById('nazwisko').value,
+                email: document.getElementById('email').value,
+                haslo: document.getElementById('haslo').value,
+            };
+
+            try {
+                const response = await fetch('/konto', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData),
+                });
+
+                const result = await response.json();
+                alert(result.message);
+            } catch (error) {
+                console.error('Błąd podczas zmiany danych:', error);
+                alert('Wystąpił błąd podczas zmiany danych');
+            }
+        });
+    </script>
+</body>
+
+</html>
