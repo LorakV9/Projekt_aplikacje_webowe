@@ -1,0 +1,103 @@
+/* Resetowanie domyœlnych stylów */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Ustawienia globalne */
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+/* Nag³ówek */
+/* Nag³ówek */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #333;
+    color: white;
+    padding: 10px 20px;
+}
+
+    /* Logo */
+    header .logo h1 {
+        font-size: 2rem;
+    }
+
+    /* Nawigacja */
+    header nav ul {
+        list-style: none;
+        display: flex;
+        padding: 0;
+    }
+
+        header nav ul li {
+            margin-left: 20px;
+        }
+
+            header nav ul li a {
+                color: white;
+                text-decoration: none;
+                font-size: 1rem;
+            }
+
+/* Nag³ówek strony */
+h1 {
+    font-size: 2rem;
+    text-align: center;
+    margin: 30px 0;
+}
+
+/* Tabela zamówieñ */
+table {
+    width: 90%;
+    margin: 0 auto;
+    border-collapse: collapse;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+thead {
+    background-color: #333;
+    color: white;
+}
+
+th, td {
+    padding: 12px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+th {
+    font-size: 1.1rem;
+}
+
+td {
+    font-size: 1rem;
+}
+
+/* Kolorowanie statusu zatwierdzenia */
+.zatwierdzone {
+    color: #2ecc71;
+}
+
+.nie-zatwierdzone {
+    color: #e74c3c;
+}
+
+/* Stopka */
+footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+}

@@ -233,15 +233,20 @@ app.get('/categories', (req, res) => {
 // Endpoint do pobierania produktów
 app.get('/products', (req, res) => {
 	const query =
-		'SELECT products.productid, products.name AS product_name, products.price, categories.name AS category_name FROM products JOIN categories ON products.categoryid = categories.categoryid'
+		'SELECT products.productid, products.name AS product_name, products.price, categories.name AS category_name FROM products JOIN categories ON products.categoryid = categories.categoryid';
+
 	db.query(query, (err, results) => {
 		if (err) {
-			console.error('Błąd zapytania:', err)
-			return res.status(500).json({ message: 'Błąd serwera.' })
+			console.error('Błąd zapytania:', err);
+			res.status(500).send('Błąd serwera');
+		} else {
+			console.log('Produkty z bazy danych2:', results); // Sprawdzamy, co zwraca baza danych
+			res.json(results); // Zwracamy dane w formacie JSON
 		}
-		res.json(results)
-	})
-})
+	});
+});
+
+
 
 // Endpoint do zatwierdzania zamówienia
 app.post('/zatwierdz/:orderId', (req, res) => {
@@ -277,7 +282,7 @@ app.get('/zamowienie', (req, res) => {
 // 3. Rejestracja użytkownika (dodawanie do tabeli urzytkownik)
 app.post('/rejestracja', (req, res) => {
 	const { imie, nazwisko, email, haslo } = req.body
-	const query = 'INSERT INTO urzytkownik (imie, nazwisko, email, haslo, rola) VALUES (?, ?, ?, ?, "user")'
+	const query = 'INSERT INTO urzytkownik (imie, nazwisko, email, haslo) VALUES (?, ?, ?, ?)'
 	db.query(query, [imie, nazwisko, email, haslo], (err, results) => {
 		if (err) throw err
 		res.json({ message: 'Rejestracja zakończona sukcesem', userId: results.insertId })
@@ -296,7 +301,7 @@ app.get('/rejestracja', async (req, res) => {
 })
 
 app.get('/api/categories', (req, res) => {
-	const query = 'SELECT name FROM categories' // zapytanie SQL
+	const query = 'SELECT categoryid, name FROM categories' // zapytanie SQL
 	db.query(query, (err, results) => {
 		if (err) {
 			console.error(err)
@@ -308,17 +313,29 @@ app.get('/api/categories', (req, res) => {
 })
 
 app.get('/api/products', (req, res) => {
-	const query = 'SELECT productid, name, price FROM products' // Zapytanie SQL do pobrania nazw i cen produktów
+	// Pobieramy parametr 'categoryid' z zapytania
+	const categoryid = req.query.categoryid;
+
+	// Jeśli 'categoryid' jest obecne, dodajemy warunek WHERE
+	let query = 'SELECT productid, name, price, categoryid FROM products';
+
+	if (categoryid) {
+		query += ` WHERE products.categoryid = ${db.escape(categoryid)}`;
+	}
+
 	db.query(query, (err, results) => {
 		if (err) {
-			console.error('Błąd zapytania:', err)
-			res.status(500).send('Błąd serwera')
+			console.error('Błąd zapytania:', err);
+			res.status(500).send('Błąd serwera');
 		} else {
-			console.log('Produkty z bazy danych:', results) // Logowanie odpowiedzi z bazy danych
-			res.json(results) // Zwróć produkty w formacie JSON
+			console.log('Produkty z bazy danych:', results);
+			res.json(results);
 		}
-	})
-})
+	});
+});
+
+
+
 
 app.post('/api/add-to-cart', (req, res) => {
 	const { productid, amount } = req.body
@@ -527,7 +544,7 @@ app.get('/zamowienia', (req, res) => {
 		return res.status(401).json({ message: 'Nie jesteś zalogowany' }) // Sprawdź, czy użytkownik jest zalogowany
 	}
 
-	const query = 'SELECT * FROM zamowienie WHERE urzytkownik_id = ? ORDER BY id DESC'
+	const query = 'SELECT opis, cena, data, zatwierdzone FROM zamowienie WHERE urzytkownik_id = ? ORDER BY data DESC'
 	db.query(query, [uzytkownik_id], (err, results) => {
 		if (err) {
 			console.error('Błąd zapytania do bazy:', err)

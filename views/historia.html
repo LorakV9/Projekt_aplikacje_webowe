@@ -5,42 +5,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Moje zamówienia</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
+    <link rel="stylesheet" href="/css/historiastyles.css">
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        table,
-        th,
-        td {
-            border: 1px solid #ddd;
-        }
-
-        th,
-        td {
-            padding: 10px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #f4f4f4;
-        }
-    </style>
 </head>
 
 <body>
+    <header>
+        <div class="logo">
+            <h1>Sklep internetowy</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="/sklep">Sklep</a></li>
+                <li><a href="/konto">Moje konto</a></li>
+                <li><a href="/historia">Historia</a></li>
+                <li><a href="/" id="logout">Wyloguj</a></li> <!-- Dodane li do wylogowania -->
+
+            </ul>
+        </nav>
+    </header>
+
+
     <h1>Moje zamówienia</h1>
     <table>
         <thead>
             <tr>
-                <th>ID Zamówienia</th>
                 <th>Opis</th>
                 <th>Łączna Cena</th>
                 <th>Data</th>
@@ -85,7 +74,6 @@
                         const zatwierdzoneStatus = order.zatwierdzone === 1 ? 'Zatwierdzone' : 'Nie zatwierdzone';
 
                         row.innerHTML = `
-                            <td>${order.id}</td>
                             <td>${order.opis}</td>
                             <td>${order.cena.toFixed(2)} zł</td>
                             <td>${dateWithTime}</td>

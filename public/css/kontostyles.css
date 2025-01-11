@@ -1,0 +1,104 @@
+/* Resetowanie domyœlnych stylów */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Ustawienia globalne */
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+/* Nag³ówek */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #333;
+    color: white;
+    padding: 10px 20px;
+}
+
+    /* Logo */
+    header .logo h1 {
+        font-size: 2rem;
+    }
+
+    /* Nawigacja */
+    header nav ul {
+        list-style: none;
+        display: flex;
+        padding: 0;
+    }
+
+        header nav ul li {
+            margin-left: 20px;
+        }
+
+            header nav ul li a {
+                color: white;
+                text-decoration: none;
+                font-size: 1rem;
+            }
+
+/* Nag³ówek strony */
+h2 {
+    font-size: 2rem;
+    text-align: center;
+    margin: 30px 0;
+}
+
+/* Formularz */
+form {
+    width: 50%;
+    margin: 0 auto;
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+    form label {
+        font-size: 1rem;
+        margin-bottom: 10px;
+        display: block;
+    }
+
+    form input {
+        width: 100%;
+        padding: 8px;
+        margin-top: 5px;
+        margin-bottom: 15px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+    }
+
+    form button {
+        background-color: #2ecc71;
+        color: white;
+        padding: 10px;
+        font-size: 1rem;
+        cursor: pointer;
+        border: none;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+    }
+
+        form button:hover {
+            background-color: #27ae60;
+        }
+
+/* Stopka */
+footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+}

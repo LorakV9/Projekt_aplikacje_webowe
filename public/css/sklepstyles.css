@@ -115,6 +115,10 @@ main {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     text-align: center;
     transition: transform 0.3s ease;
+    height: 200px; /* Sta³a wysokoœæ dla produktu */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Zapewnia odpowiednie rozmieszczenie treœci */
 }
 
     .product-item:hover {
@@ -174,9 +178,7 @@ footer {
 
 /* Przycisk do otwierania koszyka */
 #cart-button {
-    position: fixed;
-    top: 20px;
-    right: 20px;
+    position: relative;
     padding: 10px;
     background-color: #28a745;
     color: white;
@@ -184,6 +186,7 @@ footer {
     border-radius: 5px;
     cursor: pointer;
 }
+
 
 /* Styl koszyka w panelu */
 .cart-item {

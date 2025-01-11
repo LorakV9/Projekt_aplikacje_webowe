@@ -78,10 +78,6 @@
         <div id="product-list" class="product-list"></div>
     </main>
 
-    <!-- Stopka strony -->
-    <footer>
-        <p>&copy; 2024 Sklep internetowy. Wszelkie prawa zastrzeżone.</p>
-    </footer>
 
     <script>
         // Zmienna do przechowywania produktów w koszyku
@@ -89,102 +85,96 @@
 
         // Funkcja do ładowania kategorii
         async function loadCategories() {
-            try {
-                const response = await fetch('http://localhost:3000/api/categories');
-                if (!response.ok) {
-                    throw new Error('Błąd serwera przy ładowaniu kategorii');
-                }
-                const categories = await response.json();
-
-                const categoryList = document.getElementById('category-list');
-                categoryList.innerHTML = ''; // Wyczyść poprzednią zawartość
-
-                // Tworzymy checkboxy dla kategorii
-                categories.forEach(category => {
-                    const categoryItem = document.createElement('li');
-
-                    const checkbox = document.createElement('input');
-                    checkbox.type = 'checkbox';
-                    checkbox.id = `category-${category.id}`;
-                    checkbox.name = 'category';  // Możemy grupować checkboxy pod tym samym name
-                    checkbox.value = category.id;  // Przechowujemy ID kategorii jako wartość checkboxa
-
-                    const label = document.createElement('label');
-                    label.setAttribute('for', checkbox.id);  // Łączymy label z checkboxem
-                    label.textContent = category.name;  // Ustawiamy nazwę kategorii
-
-                    categoryItem.appendChild(checkbox);
-                    categoryItem.appendChild(label);
-
-                    categoryList.appendChild(categoryItem);
-                });
-            } catch (err) {
-                console.error('Błąd pobierania kategorii:', err);
-            }
+    try {
+        const response = await fetch('http://localhost:3000/api/categories');
+        if (!response.ok) {
+            throw new Error('Błąd serwera przy ładowaniu kategorii');
         }
+        const categories = await response.json();
+
+        const categoryList = document.getElementById('category-list');
+        categoryList.innerHTML = ''; // Wyczyść poprzednią zawartość
+
+        // Tworzymy checkboxy dla kategorii
+        categories.forEach(category => {
+            const categoryItem = document.createElement('li');
+
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.id = `category-${category.id}`;
+            checkbox.name = 'category';  // Możemy grupować checkboxy pod tym samym name
+            checkbox.value = category.categoryid;  // Ustawiamy id kategorii jako wartość checkboxa
+
+            const label = document.createElement('label');
+            label.setAttribute('for', checkbox.id);  // Łączymy label z checkboxem
+            label.textContent = category.name;  // Ustawiamy nazwę kategorii
+
+            categoryItem.appendChild(checkbox);
+            categoryItem.appendChild(label);
+
+            categoryList.appendChild(categoryItem);
+        });
+
+    } catch (err) {
+        console.error('Błąd pobierania kategorii:', err);
+    }
+}
 
         // Funkcja do ładowania produktów
         // Funkcja do ładowania produktów
         // Funkcja do ładowania produktów
         // Funkcja do ładowania produktów
-        async function loadProducts(minPrice = 0, maxPrice = 1000, searchQuery = '', selectedCategories = []) {
-            try {
-                const response = await fetch('http://localhost:3000/api/products');
-                if (!response.ok) {
-                    throw new Error('Błąd serwera');
-                }
-                const products = await response.json();
-
-                const productList = document.getElementById('product-list');
-                productList.innerHTML = ''; // Wyczyść poprzednią zawartość
-
-                // Filtruj produkty po cenie, nazwie i kategoriach
-                const filteredProducts = products.filter(product => {
-                    const price = parseFloat(product.price);
-                    const name = product.name.toLowerCase();
-                    const query = searchQuery.toLowerCase();
-
-                    // Sprawdzanie, czy produkt należy do jednej z wybranych kategorii
-                    const isInCategory = selectedCategories.length === 0 || selectedCategories.includes(product.category);
-
-                    return price >= minPrice && price <= maxPrice && name.includes(query) && isInCategory;
-                });
-
-                // Przejdź przez produkty i dodaj je do HTML
-                filteredProducts.forEach(product => {
-                    console.log('Produkt w liście produktów:', product); // Sprawdzamy, co zawiera produkt
-
-                    const productDiv = document.createElement('div');
-                    productDiv.classList.add('product-item');
-
-                    const name = document.createElement('h3');
-                    name.textContent = product.name;
-
-                    const price = document.createElement('p');
-                    price.classList.add('price');
-                    price.textContent = `Cena: ${parseFloat(product.price).toFixed(2)} zl`;
-
-                    const addToCartButton = document.createElement('button');
-                    addToCartButton.classList.add('add-to-cart');
-                    addToCartButton.textContent = 'Dodaj do koszyka';
-
-                    // Dodajemy nasłuchiwacz na kliknięcie przycisku
-                    addToCartButton.addEventListener('click', () => {
-                        addToCart(product); // Dodaj produkt do koszyka po kliknięciu
-                    });
-
-                    productDiv.appendChild(name);
-                    productDiv.appendChild(price);
-                    productDiv.appendChild(addToCartButton);
-
-                    productList.appendChild(productDiv);
-                });
-            } catch (err) {
-                console.error('Błąd pobierania produktów:', err);
-                document.getElementById('product-list').innerText = 'Błąd podczas ładowania produktów.';
-            }
+       async function loadProducts(minPrice = 0, maxPrice = 1000, searchQuery = '', selectedCategories = []) {
+    try {
+        const response = await fetch('http://localhost:3000/api/products');
+        if (!response.ok) {
+            throw new Error('Błąd serwera');
         }
+        const products = await response.json();
 
+        const productList = document.getElementById('product-list');
+        productList.innerHTML = ''; // Wyczyść poprzednią zawartość
+
+        // Filtruj produkty po cenie, nazwie i kategoriach
+        const filteredProducts = products.filter(product => {
+            const price = parseFloat(product.price);
+            const name = product.name.toLowerCase();
+            const query = searchQuery.toLowerCase();
+
+        const isInCategory = selectedCategories.length === 0 || selectedCategories.includes(product.categoryid);
+
+            return price >= minPrice && price <= maxPrice && name.includes(query) && isInCategory;
+
+        });
+
+        // Renderowanie produktów
+        filteredProducts.forEach(product => {
+            const productDiv = document.createElement('div');
+            productDiv.classList.add('product-item');
+
+            const name = document.createElement('h3');
+            name.textContent = product.name;
+
+            const price = document.createElement('p');
+            price.classList.add('price');
+            price.textContent = `Cena: ${parseFloat(product.price).toFixed(2)} zł`;
+
+            const addToCartButton = document.createElement('button');
+            addToCartButton.classList.add('add-to-cart');
+            addToCartButton.textContent = 'Dodaj do koszyka';
+            addToCartButton.addEventListener('click', () => addToCart(product));
+
+            productDiv.appendChild(name);
+            productDiv.appendChild(price);
+            productDiv.appendChild(addToCartButton);
+
+            productList.appendChild(productDiv);
+        });
+    } catch (err) {
+        console.error('Błąd pobierania produktów:', err);
+        document.getElementById('product-list').innerText = 'Błąd podczas ładowania produktów.';
+    }
+}
 
 
 
@@ -363,20 +353,22 @@
         });
         // Funkcja do obsługi przycisku "Filtruj"
         document.getElementById('apply-filters').addEventListener('click', () => {
-            const minPrice = parseFloat(document.getElementById('min-price').value) || 0;
-            const maxPrice = parseFloat(document.getElementById('max-price').value) || 1000;
-            const searchQuery = document.getElementById('search').value; // Pobierz zapytanie z pola wyszukiwania
+    // Zbieranie wartości z filtrów
+    const minPrice = parseFloat(document.getElementById('min-price').value) || 0;
+    const maxPrice = parseFloat(document.getElementById('max-price').value) || 1000;
+    const searchQuery = document.getElementById('search').value; // Pobierz zapytanie z pola wyszukiwania
 
-            // Pobierz zaznaczone kategorie
-            const selectedCategories = [];
-            const checkboxes = document.querySelectorAll('input[name="category"]:checked');
-            checkboxes.forEach(checkbox => {
-                selectedCategories.push(checkbox.value);  // Przechowuj ID zaznaczonych kategorii
-            });
+    // Zbieranie zaznaczonych kategorii
+    const selectedCategories = [];
+    const checkboxes = document.querySelectorAll('input[name="category"]:checked');
+    checkboxes.forEach(checkbox => {
+        // Konwertowanie value na liczbę
+        selectedCategories.push(parseInt(checkbox.value)); // Zapisujemy jako int
+    });
 
-            // Ładuj tylko produkty, które mieszczą się w przedziale cenowym, pasują do wyszukiwanego tekstu i są w wybranych kategoriach
-            loadProducts(minPrice, maxPrice, searchQuery, selectedCategories);
-        });
+    // Wywołanie funkcji loadProducts z parametrami filtrów
+    loadProducts(minPrice, maxPrice, searchQuery, selectedCategories);
+});
 
         // Funkcja do otwierania koszyka
         document.getElementById('cart-button').addEventListener('click', () => {

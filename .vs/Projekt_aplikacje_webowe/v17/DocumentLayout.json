@@ -1,42 +1,70 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\jakub\\source\\repos\\Projekt_aplikacje_webowe\\",
+  "WorkspaceRootPath": "C:\\Users\\jakub\\Documents\\Projekt_aplikacje_webowe\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jakub\\Source\\Repos\\Projekt_aplikacje_webowe\\index.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jakub\\Documents\\Projekt_aplikacje_webowe\\views\\konto.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:views\\konto.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jakub\\Documents\\Projekt_aplikacje_webowe\\index.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:index.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jakub\\source\\repos\\Projekt_aplikacje_webowe\\views\\sklep.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:views\\sklep.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jakub\\Documents\\Projekt_aplikacje_webowe\\views\\historia.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:views\\historia.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jakub\\source\\repos\\Projekt_aplikacje_webowe\\public\\css\\loginstyles.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:public\\css\\loginstyles.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jakub\\Source\\Repos\\Projekt_aplikacje_webowe\\views\\rejestracja.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:views\\rejestracja.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jakub\\source\\repos\\Projekt_aplikacje_webowe\\public\\css\\sklepstyles.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:public\\css\\sklepstyles.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jakub\\source\\repos\\Projekt_aplikacje_webowe\\public\\css\\signupstyles.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:public\\css\\signupstyles.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jakub\\source\\repos\\Projekt_aplikacje_webowe\\views\\logo.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jakub\\Documents\\Projekt_aplikacje_webowe\\views\\logo.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:views\\logo.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jakub\\Source\\Repos\\Projekt_aplikacje_webowe\\node||{8B382828-6202-11D1-8870-0000F87579D2}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:node||{8B382828-6202-11D1-8870-0000F87579D2}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jakub\\Documents\\Projekt_aplikacje_webowe\\views\\rejestracja.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:views\\rejestracja.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jakub\\Source\\Repos\\Projekt_aplikacje_webowe\\views\\main.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jakub\\Documents\\Projekt_aplikacje_webowe\\views\\admin.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:views\\admin.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jakub\\Documents\\Projekt_aplikacje_webowe\\public\\css\\sklepstyles.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:public\\css\\sklepstyles.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jakub\\Documents\\Projekt_aplikacje_webowe\\public\\css\\historiastyles.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:public\\css\\historiastyles.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jakub\\Documents\\Projekt_aplikacje_webowe\\views\\sklep.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:views\\sklep.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jakub\\Documents\\Projekt_aplikacje_webowe\\public\\css\\kontostyles.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:public\\css\\kontostyles.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jakub\\Documents\\Projekt_aplikacje_webowe\\views\\admin_panel.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:views\\admin_panel.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jakub\\Documents\\Projekt_aplikacje_webowe\\public\\css\\adminstyles.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:public\\css\\adminstyles.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jakub\\Documents\\Projekt_aplikacje_webowe\\views\\main.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:views\\main.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jakub\\Documents\\Projekt_aplikacje_webowe\\public\\css\\loginstyles.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:public\\css\\loginstyles.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jakub\\Documents\\Projekt_aplikacje_webowe\\public\\css\\signupstyles.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:public\\css\\signupstyles.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jakub\\Documents\\Projekt_aplikacje_webowe\\node||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:node||{8B382828-6202-11D1-8870-0000F87579D2}"
     }
   ],
   "DocumentGroupContainers": [
@@ -46,17 +74,17 @@
       "DocumentGroups": [
         {
           "DockedWidth": 395,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 10,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "index.js",
-              "DocumentMoniker": "C:\\Users\\jakub\\source\\repos\\Projekt_aplikacje_webowe\\index.js",
+              "DocumentMoniker": "C:\\Users\\jakub\\Documents\\Projekt_aplikacje_webowe\\index.js",
               "RelativeDocumentMoniker": "index.js",
-              "ToolTip": "C:\\Users\\jakub\\source\\repos\\Projekt_aplikacje_webowe\\index.js",
+              "ToolTip": "C:\\Users\\jakub\\Documents\\Projekt_aplikacje_webowe\\index.js",
               "RelativeToolTip": "index.js",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAABsAAAAYAAAA",
+              "ViewState": "AgIAAAABAAAAAAAAAAD4vxgBAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
               "WhenOpened": "2024-12-18T18:45:38.982Z",
               "IsPinned": true,
@@ -64,48 +92,154 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 9,
+              "Title": "kontostyles.css",
+              "DocumentMoniker": "C:\\Users\\jakub\\Documents\\Projekt_aplikacje_webowe\\public\\css\\kontostyles.css",
+              "RelativeDocumentMoniker": "public\\css\\kontostyles.css",
+              "ToolTip": "C:\\Users\\jakub\\Documents\\Projekt_aplikacje_webowe\\public\\css\\kontostyles.css",
+              "RelativeToolTip": "public\\css\\kontostyles.css",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-01-11T19:16:26.692Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "historiastyles.css",
+              "DocumentMoniker": "C:\\Users\\jakub\\Documents\\Projekt_aplikacje_webowe\\public\\css\\historiastyles.css",
+              "RelativeDocumentMoniker": "public\\css\\historiastyles.css",
+              "ToolTip": "C:\\Users\\jakub\\Documents\\Projekt_aplikacje_webowe\\public\\css\\historiastyles.css",
+              "RelativeToolTip": "public\\css\\historiastyles.css",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-01-11T19:16:17.942Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "admin.html",
+              "DocumentMoniker": "C:\\Users\\jakub\\Documents\\Projekt_aplikacje_webowe\\views\\admin.html",
+              "RelativeDocumentMoniker": "views\\admin.html",
+              "ToolTip": "C:\\Users\\jakub\\Documents\\Projekt_aplikacje_webowe\\views\\admin.html",
+              "RelativeToolTip": "views\\admin.html",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2025-01-08T21:52:14.032Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
               "Title": "sklep.html",
-              "DocumentMoniker": "C:\\Users\\jakub\\source\\repos\\Projekt_aplikacje_webowe\\views\\sklep.html",
+              "DocumentMoniker": "C:\\Users\\jakub\\Documents\\Projekt_aplikacje_webowe\\views\\sklep.html",
               "RelativeDocumentMoniker": "views\\sklep.html",
-              "ToolTip": "C:\\Users\\jakub\\source\\repos\\Projekt_aplikacje_webowe\\views\\sklep.html",
+              "ToolTip": "C:\\Users\\jakub\\Documents\\Projekt_aplikacje_webowe\\views\\sklep.html",
               "RelativeToolTip": "views\\sklep.html",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAsAAAAMAAAA",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAC8AAAADAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
               "WhenOpened": "2024-12-18T23:05:52.825Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "loginstyles.css",
-              "DocumentMoniker": "C:\\Users\\jakub\\source\\repos\\Projekt_aplikacje_webowe\\public\\css\\loginstyles.css",
-              "RelativeDocumentMoniker": "public\\css\\loginstyles.css",
-              "ToolTip": "C:\\Users\\jakub\\source\\repos\\Projekt_aplikacje_webowe\\public\\css\\loginstyles.css",
-              "RelativeToolTip": "public\\css\\loginstyles.css",
-              "ViewState": "AQIAADgAAAAAAAAAAAAswGIAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2024-12-18T21:26:38.179Z"
+              "DocumentIndex": 3,
+              "Title": "logo.html",
+              "DocumentMoniker": "C:\\Users\\jakub\\Documents\\Projekt_aplikacje_webowe\\views\\logo.html",
+              "RelativeDocumentMoniker": "views\\logo.html",
+              "ToolTip": "C:\\Users\\jakub\\Documents\\Projekt_aplikacje_webowe\\views\\logo.html",
+              "RelativeToolTip": "views\\logo.html",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAABJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2024-12-18T21:25:13.391Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 6,
-              "Title": "logo.html",
-              "DocumentMoniker": "C:\\Users\\jakub\\source\\repos\\Projekt_aplikacje_webowe\\views\\logo.html",
-              "RelativeDocumentMoniker": "views\\logo.html",
-              "ToolTip": "C:\\Users\\jakub\\source\\repos\\Projekt_aplikacje_webowe\\views\\logo.html",
-              "RelativeToolTip": "views\\logo.html",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAsAAAAVAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
-              "WhenOpened": "2024-12-18T21:25:13.391Z"
+              "Title": "sklepstyles.css",
+              "DocumentMoniker": "C:\\Users\\jakub\\Documents\\Projekt_aplikacje_webowe\\public\\css\\sklepstyles.css",
+              "RelativeDocumentMoniker": "public\\css\\sklepstyles.css",
+              "ToolTip": "C:\\Users\\jakub\\Documents\\Projekt_aplikacje_webowe\\public\\css\\sklepstyles.css",
+              "RelativeToolTip": "public\\css\\sklepstyles.css",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2024-12-18T21:09:23.146Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 2,
+              "Title": "historia.html",
+              "DocumentMoniker": "C:\\Users\\jakub\\Documents\\Projekt_aplikacje_webowe\\views\\historia.html",
+              "RelativeDocumentMoniker": "views\\historia.html",
+              "ToolTip": "C:\\Users\\jakub\\Documents\\Projekt_aplikacje_webowe\\views\\historia.html",
+              "RelativeToolTip": "views\\historia.html",
+              "ViewState": "AgIAAC0AAAAAAAAAAAAAAEsAAAApAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2025-01-08T21:52:15.13Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "admin_panel.html",
+              "DocumentMoniker": "C:\\Users\\jakub\\Documents\\Projekt_aplikacje_webowe\\views\\admin_panel.html",
+              "RelativeDocumentMoniker": "views\\admin_panel.html",
+              "ToolTip": "C:\\Users\\jakub\\Documents\\Projekt_aplikacje_webowe\\views\\admin_panel.html",
+              "RelativeToolTip": "views\\admin_panel.html",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2025-01-08T21:52:14.7Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "rejestracja.html",
+              "DocumentMoniker": "C:\\Users\\jakub\\Documents\\Projekt_aplikacje_webowe\\views\\rejestracja.html",
+              "RelativeDocumentMoniker": "views\\rejestracja.html",
+              "ToolTip": "C:\\Users\\jakub\\Documents\\Projekt_aplikacje_webowe\\views\\rejestracja.html",
+              "RelativeToolTip": "views\\rejestracja.html",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2024-12-18T18:44:22.573Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "konto.html",
+              "DocumentMoniker": "C:\\Users\\jakub\\Documents\\Projekt_aplikacje_webowe\\views\\konto.html",
+              "RelativeDocumentMoniker": "views\\konto.html",
+              "ToolTip": "C:\\Users\\jakub\\Documents\\Projekt_aplikacje_webowe\\views\\konto.html",
+              "RelativeToolTip": "views\\konto.html",
+              "ViewState": "AgIAABAAAAAAAAAAAAAcwDcAAAAjAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2025-01-08T21:52:15.524Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "adminstyles.css",
+              "DocumentMoniker": "C:\\Users\\jakub\\Documents\\Projekt_aplikacje_webowe\\public\\css\\adminstyles.css",
+              "RelativeDocumentMoniker": "public\\css\\adminstyles.css",
+              "ToolTip": "C:\\Users\\jakub\\Documents\\Projekt_aplikacje_webowe\\public\\css\\adminstyles.css",
+              "RelativeToolTip": "public\\css\\adminstyles.css",
+              "ViewState": "AgIAAJgAAAAAAAAAAAAAAKgAAAAaAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-01-11T19:33:17.291Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
               "Title": "signupstyles.css",
-              "DocumentMoniker": "C:\\Users\\jakub\\source\\repos\\Projekt_aplikacje_webowe\\public\\css\\signupstyles.css",
+              "DocumentMoniker": "C:\\Users\\jakub\\Documents\\Projekt_aplikacje_webowe\\public\\css\\signupstyles.css",
               "RelativeDocumentMoniker": "public\\css\\signupstyles.css",
-              "ToolTip": "C:\\Users\\jakub\\source\\repos\\Projekt_aplikacje_webowe\\public\\css\\signupstyles.css",
+              "ToolTip": "C:\\Users\\jakub\\Documents\\Projekt_aplikacje_webowe\\public\\css\\signupstyles.css",
               "RelativeToolTip": "public\\css\\signupstyles.css",
               "ViewState": "AQIAAEMAAAAAAAAAAAAswG0AAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
@@ -113,51 +247,40 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "sklepstyles.css",
-              "DocumentMoniker": "C:\\Users\\jakub\\source\\repos\\Projekt_aplikacje_webowe\\public\\css\\sklepstyles.css",
-              "RelativeDocumentMoniker": "public\\css\\sklepstyles.css",
-              "ToolTip": "C:\\Users\\jakub\\source\\repos\\Projekt_aplikacje_webowe\\public\\css\\sklepstyles.css",
-              "RelativeToolTip": "public\\css\\sklepstyles.css",
-              "ViewState": "AQIAAKMAAAAAAAAAAAAswM0AAAABAAAA",
+              "DocumentIndex": 13,
+              "Title": "loginstyles.css",
+              "DocumentMoniker": "C:\\Users\\jakub\\Documents\\Projekt_aplikacje_webowe\\public\\css\\loginstyles.css",
+              "RelativeDocumentMoniker": "public\\css\\loginstyles.css",
+              "ToolTip": "C:\\Users\\jakub\\Documents\\Projekt_aplikacje_webowe\\public\\css\\loginstyles.css",
+              "RelativeToolTip": "public\\css\\loginstyles.css",
+              "ViewState": "AgIAADgAAAAAAAAAAAAswGIAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2024-12-18T21:09:23.146Z"
+              "WhenOpened": "2024-12-18T21:26:38.179Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "rejestracja.html",
-              "DocumentMoniker": "C:\\Users\\jakub\\source\\repos\\Projekt_aplikacje_webowe\\views\\rejestracja.html",
-              "RelativeDocumentMoniker": "views\\rejestracja.html",
-              "ToolTip": "C:\\Users\\jakub\\source\\repos\\Projekt_aplikacje_webowe\\views\\rejestracja.html",
-              "RelativeToolTip": "views\\rejestracja.html",
-              "ViewState": "AQIAABYAAAAAAAAAAAAswEYAAAAAAAAA",
+              "DocumentIndex": 12,
+              "Title": "main.html",
+              "DocumentMoniker": "C:\\Users\\jakub\\Documents\\Projekt_aplikacje_webowe\\views\\main.html",
+              "RelativeDocumentMoniker": "views\\main.html",
+              "ToolTip": "C:\\Users\\jakub\\Documents\\Projekt_aplikacje_webowe\\views\\main.html",
+              "RelativeToolTip": "views\\main.html",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
-              "WhenOpened": "2024-12-18T18:44:22.573Z"
+              "WhenOpened": "2024-12-18T18:44:12.826Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 15,
               "Title": "node",
-              "DocumentMoniker": "C:\\Users\\jakub\\source\\repos\\Projekt_aplikacje_webowe\\node",
+              "DocumentMoniker": "C:\\Users\\jakub\\Documents\\Projekt_aplikacje_webowe\\node",
               "RelativeDocumentMoniker": "node",
-              "ToolTip": "C:\\Users\\jakub\\source\\repos\\Projekt_aplikacje_webowe\\node",
+              "ToolTip": "C:\\Users\\jakub\\Documents\\Projekt_aplikacje_webowe\\node",
               "RelativeToolTip": "node",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
               "WhenOpened": "2024-12-18T19:57:42.529Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "main.html",
-              "DocumentMoniker": "C:\\Users\\jakub\\source\\repos\\Projekt_aplikacje_webowe\\views\\main.html",
-              "RelativeDocumentMoniker": "views\\main.html",
-              "ToolTip": "C:\\Users\\jakub\\source\\repos\\Projekt_aplikacje_webowe\\views\\main.html",
-              "RelativeToolTip": "views\\main.html",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAFAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
-              "WhenOpened": "2024-12-18T18:44:12.826Z"
             }
           ]
         }
