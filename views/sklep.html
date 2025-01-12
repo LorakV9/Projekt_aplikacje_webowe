@@ -385,8 +385,8 @@ async function loadProducts(minPrice = 0, maxPrice = 1000, searchQuery = '', sel
         });
 
 
-        // Funkcja do zastosowania kodu promocyjnego
         let promoApplied = false; // Flaga wskazująca, czy kod został zastosowany
+let promoUsed = false;    // Flaga uniemożliwiająca wielokrotne użycie kodu w jednym zamówieniu
 
 // Funkcja do zastosowania kodu promocyjnego
 async function applyPromoCode() {
@@ -395,6 +395,12 @@ async function applyPromoCode() {
 
     if (!promoCodeInput) {
         promoMessage.textContent = 'Wprowadź kod promocyjny.';
+        promoMessage.style.color = 'red';
+        return;
+    }
+
+    if (promoUsed) {
+        promoMessage.textContent = 'Kod promocyjny został już zastosowany do tego zamówienia.';
         promoMessage.style.color = 'red';
         return;
     }
@@ -430,6 +436,7 @@ async function applyPromoCode() {
             promoMessage.style.color = 'green';
 
             promoApplied = true; // Ustaw flagę na true, bo kod został zastosowany
+            promoUsed = true;    // Blokada ponownego użycia kodu
         } else {
             promoMessage.textContent = data.message || 'Nieprawidłowy kod promocyjny.';
             promoMessage.style.color = 'red';
@@ -444,11 +451,22 @@ async function applyPromoCode() {
 // Funkcja obsługująca przejście do płatności
 document.getElementById('checkout-button').addEventListener('click', () => {
     if (promoApplied) {
-        alert('Płatność z uwzglednieniem zniżki.');
+        alert('Przechodzisz do płatności ze zniżką.');
     } else {
-        alert('Płatność bez uwzglednienia zniżki.');
+        alert('Przechodzisz do płatności bez zniżki.');
     }
-    // Tu możesz dodać kod do dalszego procesu płatności
+
+    // Reset flag po zakończeniu zamówienia
+    promoApplied = false;
+    promoUsed = false;
+
+    // Wyczyszczenie komunikatu i kodu promocyjnego
+    document.getElementById('promo-code').value = '';
+    document.getElementById('promo-message').textContent = '';
+    const totalPriceElement = document.querySelector('#cart-items p:last-child');
+    if (totalPriceElement) {
+        totalPriceElement.textContent = `Suma: ${parseFloat(totalPriceElement.textContent.replace('Suma po zniżce: ', '').replace(' zł', '')).toFixed(2)} zł`;
+    }
 });
 
 // Obsługa kliknięcia przycisku "Zastosuj"
