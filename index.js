@@ -313,26 +313,26 @@ app.get('/api/categories', (req, res) => {
 })
 
 app.get('/api/products', (req, res) => {
-	// Pobieramy parametr 'categoryid' z zapytania
-	const categoryid = req.query.categoryid;
+    const categoryids = req.query.categoryid ? req.query.categoryid.split(',') : [];
 
-	// Jeśli 'categoryid' jest obecne, dodajemy warunek WHERE
-	let query = 'SELECT productid, name, price, categoryid FROM products';
+    let query = 'SELECT productid, name, price, categoryid FROM products';
 
-	if (categoryid) {
-		query += ` WHERE products.categoryid = ${db.escape(categoryid)}`;
-	}
+    if (categoryids.length > 0) {
+        const placeholders = categoryids.map(() => '?').join(',');
+        query += ` WHERE categoryid IN (${placeholders})`;
+    }
 
-	db.query(query, (err, results) => {
-		if (err) {
-			console.error('Błąd zapytania:', err);
-			res.status(500).send('Błąd serwera');
-		} else {
-			console.log('Produkty z bazy danych:', results);
-			res.json(results);
-		}
-	});
+    db.query(query, categoryids, (err, results) => {
+        if (err) {
+            console.error('Błąd zapytania:', err);
+            res.status(500).send('Błąd serwera');
+        } else {
+            console.log('Produkty z bazy danych:', results);
+            res.json(results);
+        }
+    });
 });
+
 
 
 
@@ -527,7 +527,7 @@ app.post('/zamowienie/przenies', (req, res) => {
 					}
 
 					res.json({
-						message: 'Produkty przeniesione do zamowienie z uwzględnieniem zniżki',
+						message: 'Zakup dokonany',
 						zamowienieId: insertResults.insertId,
 					})
 				})

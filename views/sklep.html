@@ -121,12 +121,25 @@
 }
 
         // Funkcja do ładowania produktów
-        // Funkcja do ładowania produktów
-        // Funkcja do ładowania produktów
-        // Funkcja do ładowania produktów
-       async function loadProducts(minPrice = 0, maxPrice = 1000, searchQuery = '', selectedCategories = []) {
+       // Funkcja do pobierania zaznaczonych kategorii
+function getSelectedCategories() {
+    const checkboxes = document.querySelectorAll('input[name="category"]:checked');
+    return Array.from(checkboxes).map(checkbox => checkbox.value);
+}
+
+// Nasłuchiwanie na zmiany w checkboxach i filtrowanie produktów
+document.getElementById('category-list').addEventListener('change', () => {
+    const selectedCategories = getSelectedCategories();
+    loadProducts(0, 1000, '', selectedCategories); // Załaduj produkty z wybranych kategorii
+});
+
+// Funkcja ładowania produktów
+async function loadProducts(minPrice = 0, maxPrice = 1000, searchQuery = '', selectedCategories = []) {
     try {
-        const response = await fetch('http://localhost:3000/api/products');
+        const categoryParams = selectedCategories.length
+            ? `?categoryid=${selectedCategories.join(',')}`
+            : '';
+        const response = await fetch(`http://localhost:3000/api/products${categoryParams}`);
         if (!response.ok) {
             throw new Error('Błąd serwera');
         }
@@ -135,20 +148,8 @@
         const productList = document.getElementById('product-list');
         productList.innerHTML = ''; // Wyczyść poprzednią zawartość
 
-        // Filtruj produkty po cenie, nazwie i kategoriach
-        const filteredProducts = products.filter(product => {
-            const price = parseFloat(product.price);
-            const name = product.name.toLowerCase();
-            const query = searchQuery.toLowerCase();
-
-        const isInCategory = selectedCategories.length === 0 || selectedCategories.includes(product.categoryid);
-
-            return price >= minPrice && price <= maxPrice && name.includes(query) && isInCategory;
-
-        });
-
         // Renderowanie produktów
-        filteredProducts.forEach(product => {
+        products.forEach(product => {
             const productDiv = document.createElement('div');
             productDiv.classList.add('product-item');
 
@@ -175,6 +176,7 @@
         document.getElementById('product-list').innerText = 'Błąd podczas ładowania produktów.';
     }
 }
+
 
 
 
@@ -384,60 +386,74 @@
 
 
         // Funkcja do zastosowania kodu promocyjnego
-        async function applyPromoCode() {
-            const promoCodeInput = document.getElementById('promo-code').value.toUpperCase(); // Pobieramy kod
-            const promoMessage = document.getElementById('promo-message'); // Miejsce na komunikaty
+        let promoApplied = false; // Flaga wskazująca, czy kod został zastosowany
 
-            if (!promoCodeInput) {
-                promoMessage.textContent = 'Wprowadź kod promocyjny.';
+// Funkcja do zastosowania kodu promocyjnego
+async function applyPromoCode() {
+    const promoCodeInput = document.getElementById('promo-code').value.toUpperCase();
+    const promoMessage = document.getElementById('promo-message');
+
+    if (!promoCodeInput) {
+        promoMessage.textContent = 'Wprowadź kod promocyjny.';
+        promoMessage.style.color = 'red';
+        return;
+    }
+
+    try {
+        const response = await fetch('/api/verify-promo-code', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ promoCode: promoCodeInput }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            const discount = data.discount; // Zniżka w procentach
+            const cartItems = document.querySelectorAll('.cart-item');
+
+            if (cartItems.length === 0) {
+                promoMessage.textContent = 'Koszyk jest pusty. Dodaj produkty, aby użyć kodu.';
                 promoMessage.style.color = 'red';
                 return;
             }
 
-            // Zapytanie do backendu o sprawdzenie kodu
-            try {
-                const response = await fetch('/api/verify-promo-code', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ promoCode: promoCodeInput }),
-                });
+            // Oblicz sumę po zniżce
+            const totalPriceElement = document.querySelector('#cart-items p:last-child'); // Znajdź element z sumą
+            const totalPrice = parseFloat(totalPriceElement.textContent.replace('Suma: ', '').replace(' zł', ''));
+            const discountedPrice = totalPrice - (totalPrice * (discount / 100));
 
-                const data = await response.json();
+            totalPriceElement.textContent = `Suma po zniżce: ${discountedPrice.toFixed(2)} zł`;
+            promoMessage.textContent = `Kod promocyjny zastosowany! Zniżka: ${discount}%`;
+            promoMessage.style.color = 'green';
 
-                if (response.ok) {
-                    const discount = data.discount; // Otrzymana zniżka
-                    const cartItems = document.querySelectorAll('.cart-item');
-
-                    if (cartItems.length === 0) {
-                        promoMessage.textContent = 'Koszyk jest pusty. Dodaj produkty, aby użyć kodu.';
-                        promoMessage.style.color = 'red';
-                        return;
-                    }
-
-                    // Obliczamy nową sumę z uwzględnieniem zniżki
-                    const totalPriceElement = document.querySelector('#cart-items p:last-child'); // Znajdź element z całkowitą sumą
-                    const totalPrice = parseFloat(totalPriceElement.textContent.replace('Suma: ', '').replace(' zł', '')); // Pobierz aktualną sumę
-                    const discountedPrice = totalPrice - (totalPrice * (discount / 100)); // Oblicz sumę po zniżce
-
-                    totalPriceElement.textContent = `Suma po zniżce: ${discountedPrice.toFixed(2)} zł`; // Zaktualizuj sumę
-                    promoMessage.textContent = `Kod promocyjny zastosowany! Zniżka: ${discount}%`;
-                    promoMessage.style.color = 'green';
-                } else {
-                    promoMessage.textContent = data.message || 'Nieprawidłowy kod promocyjny.';
-                    promoMessage.style.color = 'red';
-                }
-            } catch (err) {
-                promoMessage.textContent = 'Błąd serwera przy weryfikacji kodu.';
-                promoMessage.style.color = 'red';
-                console.error('Błąd:', err);
-            }
+            promoApplied = true; // Ustaw flagę na true, bo kod został zastosowany
+        } else {
+            promoMessage.textContent = data.message || 'Nieprawidłowy kod promocyjny.';
+            promoMessage.style.color = 'red';
         }
+    } catch (err) {
+        promoMessage.textContent = 'Błąd serwera przy weryfikacji kodu.';
+        promoMessage.style.color = 'red';
+        console.error('Błąd:', err);
+    }
+}
 
-        // Dodanie obsługi kliknięcia przycisku "Zastosuj"
-        document.getElementById('apply-promo').addEventListener('click', applyPromoCode);
-        // Ładowanie kategorii i produktów po załadowaniu strony
+// Funkcja obsługująca przejście do płatności
+document.getElementById('checkout-button').addEventListener('click', () => {
+    if (promoApplied) {
+        alert('Płatność z uwzglednieniem zniżki.');
+    } else {
+        alert('Płatność bez uwzglednienia zniżki.');
+    }
+    // Tu możesz dodać kod do dalszego procesu płatności
+});
+
+// Obsługa kliknięcia przycisku "Zastosuj"
+document.getElementById('apply-promo').addEventListener('click', applyPromoCode);
+
         window.onload = () => {
             loadCategories();  // Ładowanie kategorii
             loadProducts();    // Ładowanie produktów
