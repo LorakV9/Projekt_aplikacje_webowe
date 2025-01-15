@@ -1,11 +1,9 @@
-/* Resetowanie marginesów i paddingu */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* T³o ca³ej strony */
 body {
     background-color: #f4f4f4;
     font-family: 'Arial', sans-serif;
@@ -17,7 +15,6 @@ body {
     color: #333;
 }
 
-/* Kontener formularza logowania */
 .login-container {
     background-color: white;
     padding: 40px;
@@ -35,7 +32,6 @@ body {
         font-weight: 600;
     }
 
-/* Styl dla etykiet formularza */
 label {
     font-size: 14px;
     color: #555;
@@ -44,7 +40,6 @@ label {
     display: block;
 }
 
-/* Styl dla pól input */
 input[type="email"],
 input[type="password"] {
     width: 100%;
@@ -62,7 +57,6 @@ input[type="password"] {
         outline: none;
     }
 
-/* Styl dla przycisku submit */
 button {
     width: 100%;
     padding: 12px;
@@ -79,14 +73,12 @@ button {
         background-color: #27ae60;
     }
 
-/* Styl dla komunikatu o b³êdzie */
 #error-message {
     color: red;
     font-size: 14px;
     margin-top: 15px;
 }
 
-/* Responsywnoœæ */
 @media (max-width: 600px) {
     .login-container {
         padding: 30px;

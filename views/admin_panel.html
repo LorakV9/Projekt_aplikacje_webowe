@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel Administracyjny</title>
     <link rel="stylesheet" href="/css/adminstyles.css">
+    <script src="/js/admin_panel.js" defer></script>
 </head>
 
 <body>
@@ -15,20 +16,17 @@
     <a href="/" class="top-right-btn-link">
         <button class="top-right-btn">Wyloguj</button>
     </a>
-    <!-- Formularz dodawania kategorii -->
     <h2>Dodaj Kategorię</h2>
     <form id="categoryForm">
         <input type="text" id="categoryName" placeholder="Nazwa kategorii" required>
         <button type="submit">Dodaj Kategorię</button>
     </form>
 
-    <!-- Formularz dodawania produktu -->
     <h2>Dodaj Produkt</h2>
     <form id="productForm">
         <input type="text" id="productName" placeholder="Nazwa produktu" required>
         <input type="number" id="productPrice" placeholder="Cena" required>
         <select id="productCategory" required>
-            <!-- Kategorie będą ładowane tutaj -->
         </select>
         <button type="submit">Dodaj Produkt</button>
     </form>
@@ -44,7 +42,6 @@
 
         <button type="submit">Dodaj Promocję</button>
     </form>
-    <!-- Tabela kategorii -->
     <h2>Lista Kategorii</h2>
     <table id="categoryTable">
         <thead>
@@ -55,11 +52,9 @@
             </tr>
         </thead>
         <tbody>
-            <!-- Kategorie będą wyświetlane tutaj -->
         </tbody>
     </table>
 
-    <!-- Tabela produktów -->
     <h2>Lista Produktów</h2>
     <table id="productTable">
         <thead>
@@ -72,7 +67,6 @@
             </tr>
         </thead>
         <tbody>
-            <!-- Produkty będą wyświetlane tutaj -->
         </tbody>
     </table>
 
@@ -87,7 +81,6 @@
             </tr>
         </thead>
         <tbody id="order-list">
-            <!-- Lista zamówień -->
         </tbody>
     </table>
 
@@ -104,263 +97,8 @@
             </tr>
         </thead>
         <tbody id="promocje-tabela">
-            <!-- Wiersze będą generowane dynamicznie -->
         </tbody>
     </table>
-
-    <script>
-        // Dodawanie kategorii
-        document.getElementById('categoryForm').addEventListener('submit', function (event) {
-            event.preventDefault();
-            const name = document.getElementById('categoryName').value;
-
-            fetch('/add-category', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name })
-            })
-                .then(response => response.json())
-                .then(data => {
-                    alert(data.message);
-                    loadCategories(); // Ładuj kategorie po dodaniu
-                })
-                .catch(error => alert('Błąd: ' + error));
-        });
-
-        // Dodawanie produktu
-        document.getElementById('productForm').addEventListener('submit', function (event) {
-            event.preventDefault();
-
-            const name = document.getElementById('productName').value;
-            const price = document.getElementById('productPrice').value;
-            const categoryid = document.getElementById('productCategory').value;
-
-            fetch('/add-product', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name, price, categoryid })
-            })
-                .then(response => response.json())
-                .then(data => {
-                    alert(data.message);
-                    loadProducts(); // Ładuj produkty po dodaniu
-                })
-                .catch(error => alert('Błąd: ' + error));
-        });
-
-        // Ładowanie kategorii
-        function loadCategories() {
-            fetch('/categories')
-                .then(response => response.json())
-                .then(data => {
-                    const table = document.getElementById('categoryTable').getElementsByTagName('tbody')[0];
-                    table.innerHTML = '';
-                    data.forEach((category, index) => {
-                        const row = table.insertRow();
-                        row.insertCell(0).textContent = index + 1;
-                        row.insertCell(1).textContent = category.name;
-                        const deleteCell = row.insertCell(2);
-                        const deleteButton = document.createElement('button');
-                        deleteButton.textContent = 'Usuń';
-                        deleteButton.onclick = function () {
-                            deleteCategory(category.categoryid);
-                        };
-                        deleteCell.appendChild(deleteButton);
-                    });
-
-                    // Ładowanie kategorii do selecta
-                    const select = document.getElementById('productCategory');
-                    select.innerHTML = ''; // Czyścimy istniejące opcje
-                    data.forEach(category => {
-                        const option = document.createElement('option');
-                        option.value = category.categoryid;
-                        option.textContent = category.name;
-                        select.appendChild(option);
-                    });
-                });
-        }
-
-        // Ładowanie produktów
-        function loadProducts() {
-            fetch('/products')
-                .then(response => response.json())
-                .then(data => {
-                    const table = document.getElementById('productTable').getElementsByTagName('tbody')[0];
-                    table.innerHTML = '';
-                    data.forEach((product, index) => {
-                        const row = table.insertRow();
-                        row.insertCell(0).textContent = index + 1;
-                        row.insertCell(1).textContent = product.product_name;
-                        row.insertCell(2).textContent = product.price;
-                        row.insertCell(3).textContent = product.category_name;
-                        const deleteCell = row.insertCell(4);
-                        const deleteButton = document.createElement('button');
-                        deleteButton.textContent = 'Usuń';
-                        deleteButton.onclick = function () {
-                            deleteProduct(product.productid);
-                        };
-                        deleteCell.appendChild(deleteButton);
-                    });
-                });
-        }
-
-        // Usuwanie kategorii
-        function deleteCategory(categoryId) {
-            fetch(`/delete-category/${categoryId}`, {
-                method: 'DELETE'
-            })
-                .then(response => response.json())
-                .then(data => {
-                    alert(data.message);
-                    loadCategories(); // Ładuj kategorie po usunięciu
-                })
-                .catch(error => alert('Błąd: ' + error));
-        }
-
-        // Usuwanie produktu
-        function deleteProduct(productId) {
-            fetch(`/delete-product/${productId}`, {
-                method: 'DELETE'
-            })
-                .then(response => response.json())
-                .then(data => {
-                    alert(data.message);
-                    loadProducts(); // Ładuj produkty po usunięciu
-                })
-                .catch(error => alert('Błąd: ' + error));
-        }
-
-
-        // Funkcja do załadowania zamówień
-        // Funkcja do zatwierdzania zamówienia
-        function approveOrder(orderId) {
-            fetch(`/zatwierdz/${orderId}`, {
-                method: 'POST'
-            })
-                .then(response => response.json())
-                .then(data => {
-                    alert(data.message);
-
-                    // Aktualizacja statusu w tabeli bez przeładowania strony
-                    const button = document.querySelector(`button[data-order-id="${orderId}"]`);
-                    if (button) {
-                        button.parentElement.innerHTML = 'Zatwierdzone';
-                    }
-                })
-                .catch(error => {
-                    console.error('Błąd przy zatwierdzaniu zamówienia:', error);
-                });
-        }
-
-        // Funkcja do załadowania zamówień
-        function loadOrders() {
-            fetch('/zamowienie')
-                .then(response => response.json())
-                .then(orders => {
-                    const orderList = document.getElementById('order-list');
-                    orderList.innerHTML = ''; // Czyszczenie poprzednich wyników
-
-                    orders.forEach(order => {
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                    <td>${order.id}</td>
-                    <td>${order.opis}</td>
-                    <td>${order.cena} zł</td>
-                    <td>
-                        ${order.zatwierdzone == 1 ?
-                                '<span>Zatwierdzone</span>' :
-                                `<button data-order-id="${order.id}" onclick="approveOrder(${order.id})">Zatwierdź</button>`
-                            }
-                    </td>
-                `;
-                        orderList.appendChild(row);
-                    });
-                })
-                .catch(error => console.error('Błąd ładowania zamówień:', error));
-        }
-
-
-        document.getElementById('promocja-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const kod = document.getElementById('kod').value.trim();
-            const znizka = document.getElementById('znizka').value.trim();
-
-            try {
-                const response = await fetch('/promocje/dodaj', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ kod, znizka })
-                });
-
-                const result = await response.json();
-                const messageDiv = document.getElementById('response-message');
-
-                if (response.ok) { // Jeśli status jest 200-299
-                    messageDiv.style.color = 'green';
-                    messageDiv.textContent = result.message;
-                    document.getElementById('promocja-form').reset(); // Wyczyść formularz
-                } else { // Jeśli status jest inny niż 200-299
-                    messageDiv.style.color = 'red';
-                    messageDiv.textContent = result.message || 'Wystąpił błąd.';
-                }
-            } catch (error) {
-                console.error('Błąd podczas dodawania promocji:', error);
-                alert('Wystąpił błąd podczas dodawania promocji. Spróbuj ponownie później.');
-            }
-        });
-
-        async function fetchPromocje() {
-            try {
-                const response = await fetch('/promocje'); // Pobierz dane z endpointa
-                const promocje = await response.json();
-
-                const tabela = document.getElementById('promocje-tabela');
-                tabela.innerHTML = ''; // Wyczyść zawartość tabeli
-
-                promocje.forEach(promocja => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                <td>${promocja.id}</td>
-                <td>${promocja.kod}</td>
-                <td>${promocja.znizka}%</td>
-                <td><button onclick="usunPromocje(${promocja.id})">Usuń</button></td>
-            `;
-                    tabela.appendChild(row);
-                });
-            } catch (error) {
-                console.error('Błąd podczas pobierania promocji:', error);
-            }
-        }
-
-        async function usunPromocje(id) {
-            try {
-                const response = await fetch(`/promocje/${id}`, {
-                    method: 'DELETE',
-                });
-
-                if (response.ok) {
-                    alert('Promocja została usunięta!');
-                    fetchPromocje(); // Odśwież tabelę po usunięciu
-                } else {
-                    alert('Błąd podczas usuwania promocji');
-                }
-            } catch (error) {
-                console.error('Błąd podczas usuwania promocji:', error);
-            }
-        }
-
-        // Załaduj zamówienia po załadowaniu strony
-        window.onload = function () {
-            fetchPromocje();
-            loadCategories();
-            loadProducts();
-            loadOrders();
-        };
-
-    </script>
 </body>
 
 </html>

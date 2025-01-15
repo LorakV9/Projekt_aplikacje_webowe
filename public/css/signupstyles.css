@@ -1,11 +1,9 @@
-/* Resetowanie marginesów i paddingu */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* T³o ca³ej strony */
 body {
     background-color: #f4f4f4;
     font-family: 'Arial', sans-serif;
@@ -17,7 +15,6 @@ body {
     color: #333;
 }
 
-/* Kontener formularza rejestracji */
 .signup-container {
     background-color: white;
     padding: 40px;
@@ -26,7 +23,7 @@ body {
     width: 100%;
     max-width: 400px;
     text-align: center;
-    margin: 0 15px; /* Dodajemy margines, aby kontener nie dotyka³ krawêdzi ekranu */
+    margin: 0 15px;
 }
 
     .signup-container h2 {
@@ -36,7 +33,6 @@ body {
         font-weight: 600;
     }
 
-/* Styl dla etykiet formularza */
 label {
     font-size: 14px;
     color: #555;
@@ -45,7 +41,6 @@ label {
     display: block;
 }
 
-/* Styl dla pól input */
 input[type="text"],
 input[type="email"],
 input[type="password"] {
@@ -65,7 +60,6 @@ input[type="password"] {
         outline: none;
     }
 
-/* Styl dla przycisku submit */
 button {
     width: 100%;
     padding: 12px;
@@ -82,7 +76,6 @@ button {
         background-color: #27ae60;
     }
 
-/* Styl dla komunikatu o b³êdzie */
 #error-message,
 #success-message {
     font-size: 14px;
@@ -97,7 +90,6 @@ button {
     color: green;
 }
 
-/* Responsywnoœæ */
 @media (max-width: 600px) {
     .signup-container {
         padding: 30px;

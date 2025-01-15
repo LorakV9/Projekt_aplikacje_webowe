@@ -1,6 +1,3 @@
-/* adminstyles.css */
-
-/* Resetowanie domyœlnych styli */
 * {
     margin: 0;
     padding: 0;
@@ -22,7 +19,6 @@ h1 {
     text-align: center;
 }
 
-/* Nag³ówki sekcji */
 h2 {
     font-size: 1.8rem;
     color: #444;
@@ -30,7 +26,6 @@ h2 {
     margin-bottom: 10px;
 }
 
-/* Formularze */
 form {
     background-color: #fff;
     border-radius: 8px;
@@ -65,7 +60,6 @@ button {
         background-color: #45a049;
     }
 
-/* Tabele */
 table {
     width: 100%;
     border-collapse: collapse;
@@ -101,14 +95,12 @@ table {
             background-color: #d32f2f;
         }
 
-/* Wiadomoœci */
 #response-message {
     text-align: center;
     font-size: 1.2rem;
     font-weight: bold;
 }
 
-/* Tabela promocyjna */
 #promocje-tabela td button {
     background-color: #2196F3;
     padding: 8px 15px;
@@ -124,7 +116,6 @@ table {
         background-color: #1976D2;
     }
 
-/* Style dla responsywnoœci */
 @media (max-width: 768px) {
     body {
         padding: 10px;
@@ -151,7 +142,6 @@ table {
     }
 }
 
-/* Styl dla przycisku w prawym górnym rogu */
 .top-right-btn {
     position: fixed;
     top: 20px;

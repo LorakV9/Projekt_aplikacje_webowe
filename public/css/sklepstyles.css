@@ -1,11 +1,9 @@
-/* Resetowanie domyœlnych stylów */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* Ustawienia globalne */
 body {
     font-family: Arial, sans-serif;
     line-height: 1.6;
@@ -13,7 +11,6 @@ body {
     color: #333;
 }
 
-/* Nag³ówek */
 header {
     display: flex;
     justify-content: space-between;
@@ -23,12 +20,10 @@ header {
     padding: 10px 20px;
 }
 
-    /* Logo */
     header .logo h1 {
         font-size: 2rem;
     }
 
-    /* Nawigacja */
     header nav ul {
         list-style: none;
         display: flex;
@@ -45,13 +40,11 @@ header {
                 font-size: 1rem;
             }
 
-/* Sekcja g³ówna sklepu */
 main {
     display: flex;
     padding: 20px;
 }
 
-/* Filtry po lewej stronie */
 .filters {
     width: 25%;
     padding-right: 20px;
@@ -91,6 +84,7 @@ main {
         border-radius: 5px;
         border: 1px solid #ccc;
     }
+
     .filter-category input[type="checkbox"] {
         margin-right: 10px;
     }
@@ -100,7 +94,6 @@ main {
         cursor: pointer;
     }
 
-/* Produkty */
 .product-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -115,10 +108,10 @@ main {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     text-align: center;
     transition: transform 0.3s ease;
-    height: 200px; /* Sta³a wysokoœæ dla produktu */
+    height: 200px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between; /* Zapewnia odpowiednie rozmieszczenie treœci */
+    justify-content: space-between;
 }
 
     .product-item:hover {
@@ -151,7 +144,6 @@ main {
         background-color: #27ae60;
     }
 
-/* Stopka */
 footer {
     background-color: #333;
     color: white;
@@ -162,21 +154,19 @@ footer {
     bottom: 0;
 }
 
-/* Styl dla panelu koszyka */
 #cart-panel {
     position: fixed;
     top: 0;
-    right: -300px; /* Na pocz¹tku ukryty po prawej stronie */
+    right: -300px;
     width: 300px;
     height: 100%;
     background-color: #fff;
     box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
     padding: 20px;
-    transition: right 0.3s ease; /* P³ynne przejœcie */
+    transition: right 0.3s ease;
     z-index: 100;
 }
 
-/* Przycisk do otwierania koszyka */
 #cart-button {
     position: relative;
     padding: 10px;
@@ -187,8 +177,6 @@ footer {
     cursor: pointer;
 }
 
-
-/* Styl koszyka w panelu */
 .cart-item {
     margin-bottom: 10px;
 }
@@ -197,7 +185,6 @@ footer {
         margin: 0;
     }
 
-/* Styl dla przycisku zamkniêcia koszyka */
 #close-cart {
     position: absolute;
     top: 10px;

@@ -3,7 +3,9 @@
     "",
     "\\public",
     "\\public\\css",
+    "\\public\\js",
     "\\views"
   ],
+  "SelectedNode": "\\views\\admin_panel.html",
   "PreviewInSolutionExplorer": false
 }

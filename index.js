@@ -313,29 +313,31 @@ app.get('/api/categories', (req, res) => {
 })
 
 app.get('/api/products', (req, res) => {
-    const categoryids = req.query.categoryid ? req.query.categoryid.split(',') : [];
+	const categoryids = req.query.categoryid ? req.query.categoryid.split(',') : [];
+	const minPrice = parseFloat(req.query.minPrice) || 0;
+	const maxPrice = parseFloat(req.query.maxPrice) || Number.MAX_VALUE;
+	const searchQuery = req.query.searchQuery ? `%${req.query.searchQuery}%` : '%';
 
-    let query = 'SELECT productid, name, price, categoryid FROM products';
+	let query = 'SELECT productid, name, price, categoryid FROM products WHERE price BETWEEN ? AND ? AND name LIKE ?';
 
-    if (categoryids.length > 0) {
-        const placeholders = categoryids.map(() => '?').join(',');
-        query += ` WHERE categoryid IN (${placeholders})`;
-    }
+	const queryParams = [minPrice, maxPrice, searchQuery];
 
-    db.query(query, categoryids, (err, results) => {
-        if (err) {
-            console.error('Błąd zapytania:', err);
-            res.status(500).send('Błąd serwera');
-        } else {
-            console.log('Produkty z bazy danych:', results);
-            res.json(results);
-        }
-    });
+	if (categoryids.length > 0) {
+		const placeholders = categoryids.map(() => '?').join(',');
+		query += ` AND categoryid IN (${placeholders})`;
+		queryParams.push(...categoryids);
+	}
+
+	db.query(query, queryParams, (err, results) => {
+		if (err) {
+			console.error('Błąd zapytania:', err);
+			res.status(500).send('Błąd serwera');
+		} else {
+			console.log('Produkty z bazy danych:', results);
+			res.json(results);
+		}
+	});
 });
-
-
-
-
 
 app.post('/api/add-to-cart', (req, res) => {
 	const { productid, amount } = req.body
