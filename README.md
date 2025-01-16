@@ -1,10 +1,10 @@
-Sklep Internetowy
+### Sklep Internetowy
 
-Opis projektu
+## Opis projektu
 
 Projekt internetowego sklepu z podziałem na użytkownika i admina, umożliwiający użytkownikom przeglądanie produktów, składanie zamówień, zarządzanie kontem oraz adminowi zarządzanie zawartością sklepu i użytkownikami.
 
-Jak uruchomić:
+## Jak uruchomić:
 1. Sklonuj repozytorium:
 git clone https://github.com/LorakV9/Projekt_aplikacje_webowe.git
 2. Przejdź do folderu projektu
@@ -15,9 +15,9 @@ nwm install --lts
 node index.js
 
 
-Funkcjonalności
+## Funkcjonalności
 
-Admin
+# Admin
 
 Zarządzanie użytkownikami (dodawanie, edytowanie, usuwanie).
 
@@ -25,7 +25,7 @@ Zarządzanie kategoriami i produktami (CRUD).
 
 Zarządzanie promocjami i rabatami (dodawanie, edycja, usuwanie).
 
-Użytkownik
+# Użytkownik
 
 Przeglądanie produktów z możliwością filtrowania.
 
@@ -43,15 +43,15 @@ Zarządzanie swoim kontem (edycja danych).
 
 
 
-Technologie
+## Technologie
 
 Backend: Node.js / Express, MySQL (xampp)
 
 Frontend: HTML, CSS, JavaScript
 
 
-Architektura aplikacji
-Endpointy
+## Architektura aplikacji
+# Endpointy
 
 Autoryzacja
 
@@ -95,14 +95,3 @@ Edycja konta: PUT /users/:id
 
 Usuwanie konta: DELETE /users/:id
 
-
-
-Połączenie z bazą danych.
-
-Weryfikacja logowania i rejestracja użytkowników.
-
-Filtrowanie produktów.
-
-Dodawanie produktów do koszyka.
-
-Endpoint do wyświetlania historii zamówień.
