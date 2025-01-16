@@ -10,7 +10,7 @@ document.getElementById('categoryForm').addEventListener('submit', function (eve
         .then(response => response.json())
         .then(data => {
             alert(data.message);
-            loadCategories(); // £aduj kategorie po dodaniu
+            loadCategories();
         })
         .catch(error => alert('B³¹d: ' + error));
 });
@@ -46,7 +46,7 @@ function loadCategories() {
                 row.insertCell(1).textContent = category.name;
                 const deleteCell = row.insertCell(2);
                 const deleteButton = document.createElement('button');
-                deleteButton.textContent = 'Usuñ';
+                deleteButton.textContent = 'Usun';
                 deleteButton.onclick = function () {
                     deleteCategory(category.categoryid);
                 };
@@ -78,7 +78,7 @@ function loadProducts() {
                 row.insertCell(3).textContent = product.category_name;
                 const deleteCell = row.insertCell(4);
                 const deleteButton = document.createElement('button');
-                deleteButton.textContent = 'Usuñ';
+                deleteButton.textContent = 'Usun';
                 deleteButton.onclick = function () {
                     deleteProduct(product.productid);
                 };
@@ -152,12 +152,11 @@ function loadOrders() {
                 orderList.appendChild(row);
             });
 
-            // Obliczanie i wyœwietlanie sumy zamówieñ
             const total = orders.reduce((sum, order) => sum + parseFloat(order.cena), 0).toFixed(2);
             const totalRow = document.createElement('tr');
             totalRow.innerHTML = `
-                <td colspan="2"><strong>£¹czna suma:</strong></td>
-                <td><strong>${total} z³</strong></td>
+                <td colspan="2"><strong>Laczna suma:</strong></td>
+                <td><strong>${total} zl</strong></td>
                 <td></td>
             `;
             orderList.appendChild(totalRow);
@@ -212,7 +211,7 @@ async function fetchPromocje() {
                 <td>${promocja.id}</td>
                 <td>${promocja.kod}</td>
                 <td>${promocja.znizka}%</td>
-                <td><button onclick="usunPromocje(${promocja.id})">Usuñ</button></td>
+                <td><button onclick="usunPromocje(${promocja.id})">Usun</button></td>
             `;
             tabela.appendChild(row);
         });

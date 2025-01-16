@@ -180,23 +180,33 @@ app.post('/add-product', (req, res) => {
 
 // Endpoint do usuwania kategorii
 app.delete('/delete-category/:id', (req, res) => {
-	const categoryId = req.params.id
+	const categoryId = req.params.id;
 
-	// Sprawdzamy, czy kategoria istnieje
-	const query = 'DELETE FROM categories WHERE categoryid = ?'
-	db.query(query, [categoryId], (err, results) => {
+	// Najpierw usuwamy produkty powiązane z kategorią
+	const deleteProductsQuery = 'DELETE FROM products WHERE categoryid = ?';
+	db.query(deleteProductsQuery, [categoryId], (err, results) => {
 		if (err) {
-			console.error('Błąd zapytania:', err)
-			return res.status(500).json({ message: 'Błąd serwera.' })
+			console.error('Błąd podczas usuwania produktów:', err);
+			return res.status(500).json({ message: 'Błąd serwera przy usuwaniu produktów.' });
 		}
 
-		if (results.affectedRows > 0) {
-			res.json({ message: 'Kategoria usunięta pomyślnie!' })
-		} else {
-			res.status(404).json({ message: 'Kategoria nie została znaleziona.' })
-		}
-	})
-})
+		// Następnie usuwamy kategorię
+		const deleteCategoryQuery = 'DELETE FROM categories WHERE categoryid = ?';
+		db.query(deleteCategoryQuery, [categoryId], (err, results) => {
+			if (err) {
+				console.error('Błąd zapytania:', err);
+				return res.status(500).json({ message: 'Błąd serwera przy usuwaniu kategorii.' });
+			}
+
+			if (results.affectedRows > 0) {
+				res.json({ message: 'Kategoria i powiązane produkty zostały usunięte pomyślnie!' });
+			} else {
+				res.status(404).json({ message: 'Kategoria nie została znaleziona.' });
+			}
+		});
+	});
+});
+
 
 // Endpoint do usuwania produktu
 app.delete('/delete-product/:id', (req, res) => {
@@ -565,8 +575,39 @@ app.post('/konto', (req, res) => {
 		return res.status(401).json({ message: 'Nie jesteś zalogowany' }) // Użytkownik nie jest zalogowany
 	}
 
-	const query = 'UPDATE urzytkownik SET imie = ?, nazwisko = ?, email = ?, haslo = ? WHERE id = ?'
-	db.query(query, [imie, nazwisko, email, haslo, uzytkownik_id], (err, results) => {
+	// Tworzymy dynamiczne zapytanie SQL
+	let fieldsToUpdate = []
+	let values = []
+
+	if (imie) {
+		fieldsToUpdate.push('imie = ?')
+		values.push(imie)
+	}
+	if (nazwisko) {
+		fieldsToUpdate.push('nazwisko = ?')
+		values.push(nazwisko)
+	}
+	if (email) {
+		fieldsToUpdate.push('email = ?')
+		values.push(email)
+	}
+	if (haslo) {
+		fieldsToUpdate.push('haslo = ?')
+		values.push(haslo)
+	}
+
+	// Jeśli nie przekazano żadnych danych do aktualizacji, zwracamy błąd
+	if (fieldsToUpdate.length === 0) {
+		return res.status(400).json({ message: 'Brak danych do aktualizacji' })
+	}
+
+	// Dodajemy ID użytkownika na końcu tablicy wartości
+	values.push(uzytkownik_id)
+
+	const query = `UPDATE urzytkownik SET ${ fieldsToUpdate.join(', ')
+} WHERE id = ?`;
+
+	db.query(query, values, (err, results) => {
 		if (err) {
 			console.error('Błąd podczas aktualizacji danych:', err)
 			return res.status(500).json({ message: 'Błąd serwera' })
